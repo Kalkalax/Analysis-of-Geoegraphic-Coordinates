@@ -55,7 +55,7 @@ class FileReader:
 
         thirdColumn = self.dataFrame.iloc[:,2]
 
-        print(thirdColumn)
+        #print(thirdColumn)
 
         for value in thirdColumn:
             if not re.match("^[0-9.]+$", str(value)):
@@ -63,6 +63,18 @@ class FileReader:
         
         return True
     
+    #Metoda weryfikująca czy znacznik czasowy nie zawiera niedozwolonych znaków
+    def checkDataAndTime(self):
+
+        fourthColumn = self.dataFrame.iloc[:,3]
+
+        #print(fourthColumn)
+
+        for value in fourthColumn:
+            if not re.match("^[0-9.: ]+$", str(value)):
+                return False
+            
+        return True
 
     #Metoda zwracająca dane odczytane z pliku CSV w dataframe
     def getData(self):
