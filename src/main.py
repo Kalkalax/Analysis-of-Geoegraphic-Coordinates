@@ -11,10 +11,16 @@ if __name__ == "__main__":
 
     fileReader = FileReader(filePath)
     dataFrame = fileReader.readFile()
+    
     #fileReader.checkPointName()
-
     if not fileReader.checkPointName():
         print("Wykryto nieakceptowalny znak w nazwie punktu")
+    else:
+        print("GIT")
+
+    #fileReader.checkCoordinates()
+    if not fileReader.checkCoordinates():
+        print("Wykryto nieakceptowalny znak w współrzędnych")
     else:
         print("GIT")
 
