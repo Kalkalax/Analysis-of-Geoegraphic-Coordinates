@@ -3,6 +3,14 @@ from filereader import FileReader #klasa odpowiedzialna za wczytanie i sprawdzen
 
 import sys
 
+def exitWithMessage(message):
+    print(message)
+    input("Naciśnij Enter, aby zamknąć aplikację...")
+    sys.exit(1)
+
+
+
+
 if __name__ == "__main__":
 
     filePathRequester = FilePathRequester()
@@ -17,29 +25,20 @@ if __name__ == "__main__":
     dataFrame = fileReader.readFile()
     
     if not fileReader.checkPointName():
-        print("Wykryto nieakceptowalny znak w nazwie punktu")
-        input("Naciśnij Enter, aby zamknąć aplikację...")
-        sys.exit(1)
+        exitWithMessage("Wykryto nieodpowiedni format nazw punktów")
     
     elif not fileReader.checkCoordinates():
-        print("Wykryto nieakceptowalny znak w współrzędnych")
-        input("Naciśnij Enter, aby zamknąć aplikację...")
-        sys.exit(1)
-
+        exitWithMessage("Wykryto nieodpowiedni format współrzędnych")
+        
     elif not fileReader.checkAltitude():
-        print("Wykryto nieakceptowalny znak w wysokości")
-        input("Naciśnij Enter, aby zamknąć aplikację...")
-        sys.exit(1)
-
+        exitWithMessage("Wykryto nieodpowiedni format wysokości")
+        
     elif not fileReader.checkDataAndTime():
-        print("Wykryto nieakceptowalny znak w znaczniku czasowym")
-        input("Naciśnij Enter, aby zamknąć aplikację...")
-        sys.exit(1)
-
+        exitWithMessage("Wykryto nieodpowiedni format znaczników czasowych")
+        
     else:
         print("Wprowadzone dane nie zawierają błędów")
-        input("Naciśnij Enter, aby zamknąć aplikację...")
-        sys.exit(1)
+
 
     
 

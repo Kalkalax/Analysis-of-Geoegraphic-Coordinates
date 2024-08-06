@@ -32,9 +32,9 @@ class FileReader:
         #print(firstColumn)
 
         for value in firstColumn:
-            if not re.match("^[A-Za-z ]+$", str(value)):
+            if not re.match("^[A-Z][a-z]*(\s[a-zA-Z][a-z]*)*$", str(value)):
                 return False
-            
+    
         return True
     
     #Metoda weryfikujaca czy współrzędne nie zawierają niedozwolonych znaków
@@ -55,23 +55,19 @@ class FileReader:
 
         thirdColumn = self.dataFrame.iloc[:,2]
 
-        #print(thirdColumn)
-
         for value in thirdColumn:
-            if not re.match("^[0-9.]+$", str(value)):
+            if not re.match("^\d\.\d+$", str(value)):
                 return False
         
         return True
     
-    #Metoda weryfikująca czy znacznik czasowy nie zawiera niedozwolonych znaków
+    #Metoda weryfikująca czy znacznik czasowy posiada odpowiedni format
     def checkDataAndTime(self):
 
         fourthColumn = self.dataFrame.iloc[:,3]
 
-        #print(fourthColumn)
-
         for value in fourthColumn:
-            if not re.match("^[0-9.: ]+$", str(value)):
+            if not re.match("^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$", str(value)):
                 return False
             
         return True
