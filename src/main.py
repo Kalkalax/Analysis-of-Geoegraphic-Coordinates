@@ -24,4 +24,11 @@ if __name__ == "__main__":
     else:
         print("GIT")
 
+    fileReader.checkAltitude()
+
+    if not fileReader.checkAltitude():
+        print("Wykryto nieakceptowalny znak w wysokości")
+    else:
+        print("GIT")
+
 
