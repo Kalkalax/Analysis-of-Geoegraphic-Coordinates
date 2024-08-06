@@ -13,8 +13,6 @@ class FileReader:
         try:
             self.dataFrame = pd.read_csv(self.filePath, sep=';')
 
-            print(self.dataFrame)
-
         except FileNotFoundError:
             print(f"Error: The file at {self.filePath} was not found.")
         except pd.errors.ParserError:
@@ -24,12 +22,10 @@ class FileReader:
 
         return self.dataFrame
     
-    #Metoda weryfikująca czy nazwa punktu nie zawiera niedozwolonych znaków
+    #Metoda weryfikująca czy nazwa punktu posiada odpowiedni format
     def checkPointName(self):
         
         firstColumn = self.dataFrame.iloc[:,0]
-
-        #print(firstColumn)
 
         for value in firstColumn:
             if not re.match("^[A-Z][a-z]*(\s[a-zA-Z][a-z]*)*$", str(value)):
@@ -37,20 +33,22 @@ class FileReader:
     
         return True
     
-    #Metoda weryfikujaca czy współrzędne nie zawierają niedozwolonych znaków
+    #Metoda weryfikujaca czy współrzędne posiadają odpowiedni format
     def checkCoordinates(self):
 
         secondColumn = self.dataFrame.iloc[:,1]
 
-        #print(secondColumn)
-
         for value in secondColumn:
-            if not re.match("^[0-9NESW.,\"'° -]+$", str(value)):
+            
+            if (not re.match("^-?\d{1,3}\.\d+,-?\d{1,3}\.\d+$", str(value)) and
+                not re.match("^[NS]\d{1,2}\.\d+°,[EW]\d{1,2}\.\d+°$", str(value)) and
+                not re.match("^[NS]\d{1,2}°\d{1,2}\.\d+,[EW]\d{1,2}°\d{1,2}\.\d+$", str(value)) and
+                not re.match("""^[NS]\d{1,2}°\d{1,2}'\d{1,2}\.\d+",[EW]\d{1,2}°\d{1,2}'\d{1,2}\.\d+"$""", str(value))):
                 return False
-        
+
         return True
 
-    #Metoda weryfikująca czy wysokość nie zawiera niedozwolonych znaków
+    #Metoda weryfikująca czy wysokość posiada odpowiedni format
     def checkAltitude(self):
 
         thirdColumn = self.dataFrame.iloc[:,2]
@@ -71,6 +69,11 @@ class FileReader:
                 return False
             
         return True
+    
+    #Metoda weryfikująca czy metadane posiadają odpowiedni format (NIE NAPISANE)
+    def checkMetadata(self):
+
+        pass
 
     #Metoda zwracająca dane odczytane z pliku CSV w dataframe
     def getData(self):

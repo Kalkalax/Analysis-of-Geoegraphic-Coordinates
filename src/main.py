@@ -8,21 +8,20 @@ def exitWithMessage(message):
     input("Naciśnij Enter, aby zamknąć aplikację...")
     sys.exit(1)
 
-
-
-
 if __name__ == "__main__":
+
+    #Inicjalizacja FilePathRequester i pobranie lokalizacji pliku CSV
 
     filePathRequester = FilePathRequester()
     filePathRequester.askFilePath()
     filePath = filePathRequester.getPath()
 
-    #print("Pobrana scieżka pliku: " + filePath)
-
     #Inicjalizacja FileReader oraz przeprowadzenie weryfikacji
 
     fileReader = FileReader(filePath)
     dataFrame = fileReader.readFile()
+
+    print(dataFrame)
     
     if not fileReader.checkPointName():
         exitWithMessage("Wykryto nieodpowiedni format nazw punktów")
