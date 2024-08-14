@@ -3,14 +3,14 @@ import pandas as pd
 #Klasa obsługująca wczytanie pliku CSV i zwrócenie zawartości w dataFrame
 class FileReader:
     def __init__(self, filePath):   
-        self.filePath = filePath
-        self.dataFrame = None
+        self.filePath = f"{filePath}"
+        self.dataFrame = pd.DataFrame
 
     #Metoda wczytująca zawartość pliku CSV do dataframe
     def readFile(self):
 
         try:
-            self.dataFrame = pd.read_csv(self.filePath + "x", sep=';')
+            self.dataFrame = pd.read_csv(self.filePath, sep=';')
             return True
         except FileNotFoundError:
             print(f"# Error: The file at {self.filePath} was not found.")
