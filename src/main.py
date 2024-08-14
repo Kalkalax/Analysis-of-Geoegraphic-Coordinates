@@ -26,6 +26,7 @@ if __name__ == "__main__":
     filePathRequester = FilePathRequester()
     if filePathRequester.askFilePath():
         filePath = filePathRequester.getPath()
+        print("# Wskazanie lokalizacji pliku CSV przebiegło prawidłowo")
     else:
         exitWithMessage("# Nie wskazano lokalizacji pliku do odczytu")
 
@@ -41,45 +42,43 @@ if __name__ == "__main__":
     
     print(dataFrame) # <- do tąd jest git
     
-    # if not fileReader.checkPointName():
-    #     exitWithMessage("# Wykryto nieodpowiedni format nazw punktów")
-    
-    # elif not fileReader.checkCoordinates():
-    #     exitWithMessage("# Wykryto nieodpowiedni format współrzędnych")
-        
-    # elif not fileReader.checkAltitude():
-    #     exitWithMessage("# Wykryto nieodpowiedni format wysokości")
-        
-    # elif not fileReader.checkDataAndTime():
-    #     exitWithMessage("# Wykryto nieodpowiedni format znaczników czasowych")
-        
-    # else:
-    #     print("# Wprowadzone dane nie zawierają błędów")
-
+   
 
     #Tu piszemy DataProcesor
-    dataProcessor = DataProcessor()
+    dataProcessor = DataProcessor(dataFrame)
+    ###
+    if dataProcessor.checkPointName():
+        print("Nazwa poprawna")
+    else:
+        exitWithMessage("bład w nazwie")
+
+    if dataProcessor.checkAndConvertCoordinates():
+        print("kordynaty ok")
+    else:
+        exitWithMessage("bład w kordynatach")
 
 
-    for index in range(len(dataFrame)):
 
-        coordinates = dataFrame.iloc[index,1]
-        print(coordinates)
-        regexPatern = dataProcessor.checkDataPatern(coordinates)
+
+    # for index in range(len(dataFrame)):
+
+    #     coordinates = dataFrame.iloc[index,1]
+    #     print(coordinates)
+    #     regexPatern = dataProcessor.checkDataPatern(coordinates)
         
-        if regexPatern == 1:
-            print("1")
-        elif regexPatern == 2:
-            print("2")
-        elif regexPatern == 3:
-            print("3")
-        elif regexPatern == 4:
-            print("4")
-        elif regexPatern == None:
-            exitWithMessage(f"# Wykryto nieoczekiwany błąd w kordynatach pod indeksem {index}")
+    #     if regexPatern == 1:
+    #         print("1")
+    #     elif regexPatern == 2:
+    #         print("2")
+    #     elif regexPatern == 3:
+    #         print("3")
+    #     elif regexPatern == 4:
+    #         print("4")
+    #     elif regexPatern == None:
+    #         exitWithMessage(f"# Wykryto nieoczekiwany błąd w kordynatach pod indeksem {index}")
 
 
-    print("# Kordynaty zostały pomyślnie przeformatowane")
+    
 
     #Inicjalizacja ConfigurationParameters i ConfigurationFlieMenager oraz wczytanie konfiguracji bądz jej utworzenie
 
