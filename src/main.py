@@ -13,6 +13,10 @@ def exitWithMessage(message):
     input("# Naciśnij Enter, aby zamknąć aplikację...")
     sys.exit(1)
 
+def exitWithoutMessage():
+    input("# Naciśnij Enter, aby zamknąć aplikację...")
+    sys.exit(1)
+
 if __name__ == "__main__":
 
     #Inicjalizacja FilePathRequester i pobranie lokalizacji pliku CSV
@@ -26,31 +30,35 @@ if __name__ == "__main__":
     #Inicjalizacja FileReader oraz przeprowadzenie weryfikacji
 
     fileReader = FileReader(filePath)
-    dataFrame = fileReader.readFile()
+    
+    if fileReader.readFile():
+        print("# Wczytywanie pliku CSV przebiegło prawidłowo")
+    else:
+        exitWithoutMessage()
+    
+    dataFrame = fileReader.getData()
 
     print(dataFrame)
     
-    if not fileReader.checkPointName():
-        exitWithMessage("# Wykryto nieodpowiedni format nazw punktów")
+    # if not fileReader.checkPointName():
+    #     exitWithMessage("# Wykryto nieodpowiedni format nazw punktów")
     
-    elif not fileReader.checkCoordinates():
-        exitWithMessage("# Wykryto nieodpowiedni format współrzędnych")
+    # elif not fileReader.checkCoordinates():
+    #     exitWithMessage("# Wykryto nieodpowiedni format współrzędnych")
         
-    elif not fileReader.checkAltitude():
-        exitWithMessage("# Wykryto nieodpowiedni format wysokości")
+    # elif not fileReader.checkAltitude():
+    #     exitWithMessage("# Wykryto nieodpowiedni format wysokości")
         
-    elif not fileReader.checkDataAndTime():
-        exitWithMessage("# Wykryto nieodpowiedni format znaczników czasowych")
+    # elif not fileReader.checkDataAndTime():
+    #     exitWithMessage("# Wykryto nieodpowiedni format znaczników czasowych")
         
-    else:
-        print("# Wprowadzone dane nie zawierają błędów")
+    # else:
+    #     print("# Wprowadzone dane nie zawierają błędów")
 
 
     #Tu piszemy DataProcesor
     dataProcessor = DataProcessor()
 
-    # secondColumn = dataFrame.iloc[:,1]
-    # print(secondColumn)
 
     for index in range(len(dataFrame)):
 
