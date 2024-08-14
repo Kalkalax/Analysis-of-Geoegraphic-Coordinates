@@ -77,4 +77,5 @@ class FileReader:
 
     #Metoda zwracająca dane odczytane z pliku CSV w dataframe
     def getData(self):
+        
         return self.dataFrame
