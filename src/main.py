@@ -24,21 +24,22 @@ if __name__ == "__main__":
     print("# Podaj lokalizacje pliku CSV z punktami współrzędnych")
 
     filePathRequester = FilePathRequester()
-    filePathRequester.askFilePath()
-    filePath = filePathRequester.getPath()
+    if filePathRequester.askFilePath():
+        filePath = filePathRequester.getPath()
+    else:
+        exitWithMessage("# Nie wskazano lokalizacji pliku do odczytu")
 
-    #Inicjalizacja FileReader oraz przeprowadzenie weryfikacji
+    #Inicjalizacja FileReader 
 
     fileReader = FileReader(filePath)
-    
+
     if fileReader.readFile():
+        dataFrame = fileReader.getData()
         print("# Wczytywanie pliku CSV przebiegło prawidłowo")
     else:
         exitWithoutMessage()
     
-    dataFrame = fileReader.getData()
-
-    print(dataFrame)
+    print(dataFrame) # <- do tąd jest git
     
     # if not fileReader.checkPointName():
     #     exitWithMessage("# Wykryto nieodpowiedni format nazw punktów")
