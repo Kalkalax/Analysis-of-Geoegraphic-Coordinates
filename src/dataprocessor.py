@@ -5,57 +5,79 @@ class DataProcessor:
     def __init__(self, dataFrame):
         self.dataFrame = dataFrame
 
-    # def checkDataPatern(self, coordinates):
-    
-
-    #     if re.match(r"^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$", str(coordinates)):
-    #         return 1
-    #     elif re.match(r"^([NS])(\d{1,2}\.\d+)°,[EW](\d{1,2}\.\d+)°$", str(coordinates)):
-    #         return 2
-    #     elif re.match(r"^([NS])(\d{1,2})°(\d{1,2}\.\d+),([EW])(\d{1,2})°(\d{1,2}\.\d+)$", str(coordinates)):
-    #         return 3
-    #     elif re.match(r"^([NS])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"\,([EW])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"$", str(coordinates)):
-    #         return 4
-    #     else:   
-    #         return None
-
     def checkPointName(self):
 
-        firstColumn = self.dataFrame.iloc[:,0]
+        for index in range(len(self.dataFrame)):
 
-        for value in firstColumn:
+            value = self.dataFrame.iloc[index, 0]
+
             if not re.match("^[A-Z][a-z]*(\s[a-zA-Z][a-z]*)*$", str(value)):
                 return False
     
         return True
     
-    def checkAndConvertCoordinates(self):
+    def checkAndConvertCoordinates(self, decimalplaces = 6):
 
-        secondColumn = self.dataFrame.iloc[:,1]
-        
+        for index in range(len(self.dataFrame)):
 
-        for value in secondColumn:
-
-            # firstPatern = re.match(r"^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$", str(value))
-            # secondPatern = re.match(r"^([NS])(\d{1,2}\.\d+)°,[EW](\d{1,2}\.\d+)°$", str(value))
-            # thirdPatern = re.match(r"^([NS])(\d{1,2})°(\d{1,2}\.\d+),([EW])(\d{1,2})°(\d{1,2}\.\d+)$", str(value))
-            # fourthPatern = re.match(r"^([NS])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"\,([EW])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"$", str(value))
+            value = self.dataFrame.iloc[index, 1]
             
             if (pattern := re.match(r"^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$", str(value))):
                 
-                latitude = float(pattern.group(1))
-                longitude = float(pattern.group(2))
-                print(f"Latitude: {latitude}, Longitude: {longitude}")
+                latitude = round(float(pattern.group(1)), decimalplaces)
+                longitude = round(float(pattern.group(2)), decimalplaces)
 
-            elif (pattern := re.match(r"^([NS])(\d{1,2}\.\d+)°,[EW](\d{1,2}\.\d+)°$", str(value))):
-                print(value + " - 2")
+            elif (pattern := re.match(r"^([NS])(\d{1,2}\.\d+)°,([EW])(\d{1,2}\.\d+)°$", str(value))):
+                
+                latitude = round(float(pattern.group(2)) * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
+                longitude = round(float(pattern.group(4)) * (-1 if pattern.group(3) == 'W' else 1), decimalplaces)
+
             elif (pattern := re.match(r"^([NS])(\d{1,2})°(\d{1,2}\.\d+),([EW])(\d{1,2})°(\d{1,2}\.\d+)$", str(value))):
-                print(value + " - 3")
+                
+                latitude = round(int(pattern.group(2)) + float(pattern.group(3)) / 60 * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
+                longitude = round(int(pattern.group(5)) + float(pattern.group(6)) / 60 * (-1 if pattern.group(4) == 'W' else 1), decimalplaces)
+
             elif (pattern := re.match(r"^([NS])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"\,([EW])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"$", str(value))):
-                print(value + " - 4")
+
+                latitude = round(int(pattern.group(2)) + int(pattern.group(3)) / 60 + float(pattern.group(4)) / 3600 * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
+                longitude = round(int(pattern.group(6)) + int(pattern.group(7)) / 60 + float(pattern.group(8)) / 3600 * (-1 if pattern.group(5) == 'W' else 1), decimalplaces)
+
             else:
                 return False
-                
+            
+            self.dataFrame.iloc[index, 1] = f"{latitude},{longitude}"
+
         return True
+    
+
+    def checkAltitude(self):
+
+        for index in range(len(self.dataFrame)):
+
+            value = self.dataFrame.iloc[index, 2]
+
+            if not re.match("^\d\.\d+$", str(value)):
+                return False
+        
+        return True
+
+    def checkDataAndTime(self):
+
+        for index in range(len(self.dataFrame)):
+
+            value = self.dataFrame.iloc[index, 3]
+
+            if not re.match("^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$", str(value)):
+                return False
+            
+        return True
+    
+    def checkMetadata(self):
+
+        pass
+
+    def getData(self):
+
+        return self.dataFrame
 
         

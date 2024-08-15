@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     #Tu piszemy DataProcesor
     dataProcessor = DataProcessor(dataFrame)
-    ###
+    #########################################################
     if dataProcessor.checkPointName():
         print("Nazwa poprawna")
     else:
@@ -60,22 +60,10 @@ if __name__ == "__main__":
 
 
 
-    # for index in range(len(dataFrame)):
+    dataFrame = dataProcessor.getData()
+    print(dataFrame)
+    #########################################################
 
-    #     coordinates = dataFrame.iloc[index,1]
-    #     print(coordinates)
-    #     regexPatern = dataProcessor.checkDataPatern(coordinates)
-        
-    #     if regexPatern == 1:
-    #         print("1")
-    #     elif regexPatern == 2:
-    #         print("2")
-    #     elif regexPatern == 3:
-    #         print("3")
-    #     elif regexPatern == 4:
-    #         print("4")
-    #     elif regexPatern == None:
-    #         exitWithMessage(f"# Wykryto nieoczekiwany błąd w kordynatach pod indeksem {index}")
 
 
     
