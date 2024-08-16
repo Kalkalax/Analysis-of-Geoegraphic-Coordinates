@@ -5,6 +5,8 @@ from dataprocessor import DataProcessor
 from configurationparameters import ConfigurationParameters #klasa zawierające configuracje bazy danych
 from configurationfliemenager import ConfigurationFlieMenager #klasa odpowiedzialna za weryfikacje wczytywanie i tworzenie konfiguracji bazy danych
 
+from databasemanager import DatabaseManager 
+
 
 import sys
 
@@ -57,8 +59,20 @@ if __name__ == "__main__":
     else:
         exitWithMessage("bład w kordynatach")
 
+    if dataProcessor.checkAltitude():
+        print("wysokosc ok")
+    else:
+        exitWithMessage("bład w wysokosci")
 
+    if dataProcessor.checkDataAndTime():
+        print("data ok")
+    else:
+        exitWithMessage("bład w dacie")  
 
+    if dataProcessor.checkMetadata():
+        print("metadata ok")
+    else:
+        exitWithMessage("bład w metadacie")  
 
     dataFrame = dataProcessor.getData()
     print(dataFrame)
@@ -87,5 +101,39 @@ if __name__ == "__main__":
         input("# Naciśnij Enter, aby zamknąć aplikację...")
         sys.exit(1)
 
-    #print(config)
+    print(config)
+
+    #########################################################
+    databaseManager = DatabaseManager(config)
+
+    while True:
+        if databaseManager.checkDatabaseExistence():
+            print("baza danych istnieje")
+            break
+        elif not databaseManager.checkDatabaseExistence():
+            print("baza danych nie istnieje")
+            print("Tworzenie bazy danych")
+            databaseManager.createDatabase()
+        else: 
+            exitWithMessage("błąd bazy danych")
+    
+    print(databaseManager.checkDatabaseTableExistence())
+
+   
+    if databaseManager.checkDatabaseTableExistence():
+        print("tabela danych istnieje")
+    elif not databaseManager.checkDatabaseTableExistence():
+        print("tabela danych nie istnieje")
+        print("Tworzenie tabeli danych") 
+
+    else:
+        exitWithMessage("błąd bazy danych")
+
+
+    #########################################################
+
+
+
+
+    exitWithMessage("")
 

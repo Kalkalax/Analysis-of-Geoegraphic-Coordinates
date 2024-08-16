@@ -1,4 +1,4 @@
-import pandas as pd
+#import pandas as pd
 import re
 
 class DataProcessor:
@@ -74,7 +74,7 @@ class DataProcessor:
     
     def checkMetadata(self):
 
-        pass
+        return True
 
     def getData(self):
 
