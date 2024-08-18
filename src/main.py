@@ -114,20 +114,22 @@ if __name__ == "__main__":
             print("baza danych nie istnieje")
             print("Tworzenie bazy danych")
             databaseManager.createDatabase()
+            print("Tworzenie tabeli danych")
+            databaseManager.createDatabaseTable()
         else: 
             exitWithMessage("błąd bazy danych")
-    
-    print(databaseManager.checkDatabaseTableExistence())
 
-   
-    if databaseManager.checkDatabaseTableExistence():
-        print("tabela danych istnieje")
-    elif not databaseManager.checkDatabaseTableExistence():
-        print("tabela danych nie istnieje")
-        print("Tworzenie tabeli danych") 
+    while True:
+        if databaseManager.checkDatabaseTableExistence():
+            print("tabela danych istnieje")
+            break
+        elif not databaseManager.checkDatabaseTableExistence():
+            print("tabela danych nie istnieje")
+            print("Tworzenie tabeli danych")
+            databaseManager.createDatabaseTable()
 
-    else:
-        exitWithMessage("błąd bazy danych")
+        else:
+            exitWithMessage("błąd bazy danych")
 
 
     #########################################################
