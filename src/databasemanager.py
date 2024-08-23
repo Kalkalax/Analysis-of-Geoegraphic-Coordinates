@@ -1,10 +1,13 @@
 import psycopg2
+import pandas as pd
+import numpy as np
 
 
 class DatabaseManager:
     def __init__(self, configParameters):
         self.configParameters = configParameters
         self.connectionParametrs = {}
+        self.dataFrame = pd.DataFrame
 
     def checkDatabaseExistence(self):
 
@@ -112,5 +115,38 @@ class DatabaseManager:
         finally:
             cur.close()
             conn.close() 
-
         
+    def insertData(self, dataFrame):
+
+        addedRow = 0
+        self.dataFrame = dataFrame.replace({np.nan: ""}) 
+
+        self.connectionParametrs = {
+            "host": self.configParameters["host"],
+            "port": self.configParameters["port"],
+            "dbname": self.configParameters["dbname"],
+            "user": self.configParameters["user"],
+            "password": self.configParameters["password"]
+        }
+
+        try:
+            conn = psycopg2.connect(**self.connectionParametrs)
+            conn.autocommit = True
+            cur = conn.cursor()
+
+            for _, row in self.dataFrame.iterrows():
+                cur.execute(f'SELECT 1 FROM "{self.configParameters["tbname"]}" WHERE point_name = %s AND coordinates = %s AND altitude = %s AND date_and_time = %s AND metadata = %s', tuple(row))
+                
+               
+                if cur.fetchone() is None:
+                    cur.execute(f'INSERT INTO "{self.configParameters["tbname"]}" VALUES (%s, %s, %s, %s, %s)', tuple(row))
+                    addedRow += 1
+
+        except Exception as e:
+            print(f"Błąd podczas wstawiania danych do bazy danych {self.configParameters['dbname']}: {e}")
+
+
+        finally:
+            cur.close()
+            conn.close()
+            return addedRow

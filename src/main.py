@@ -132,6 +132,9 @@ if __name__ == "__main__":
             exitWithMessage("błąd bazy danych")
 
 
+    addedRow = databaseManager.insertData(dataFrame)
+    print(f"Dodano {addedRow} rekordów do bazy danych ")
+
     #########################################################
 
 
