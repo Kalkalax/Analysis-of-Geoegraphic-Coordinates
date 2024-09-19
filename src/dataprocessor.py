@@ -27,17 +27,17 @@ class DataProcessor:
                 latitude = round(float(pattern.group(1)), decimalplaces)
                 longitude = round(float(pattern.group(2)), decimalplaces)
 
-            elif (pattern := re.match(r"^([NS])(\d{1,2}\.\d+)°,([EW])(\d{1,2}\.\d+)°$", str(value))):
+            elif (pattern := re.match(r"^([NS])(\d{1,3}\.\d+)°,([EW])(\d{1,3}\.\d+)°$", str(value))):
                 
                 latitude = round(float(pattern.group(2)) * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
                 longitude = round(float(pattern.group(4)) * (-1 if pattern.group(3) == 'W' else 1), decimalplaces)
 
-            elif (pattern := re.match(r"^([NS])(\d{1,2})°(\d{1,2}\.\d+),([EW])(\d{1,2})°(\d{1,2}\.\d+)$", str(value))):
+            elif (pattern := re.match(r"^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$", str(value))):
                 
                 latitude = round(int(pattern.group(2)) + float(pattern.group(3)) / 60 * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
                 longitude = round(int(pattern.group(5)) + float(pattern.group(6)) / 60 * (-1 if pattern.group(4) == 'W' else 1), decimalplaces)
 
-            elif (pattern := re.match(r"^([NS])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"\,([EW])(\d{1,2})°(\d{1,2})'(\d{1,2}\.\d+)\"$", str(value))):
+            elif (pattern := re.match(r"^([NS])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"\,([EW])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"$", str(value))):
 
                 latitude = round(int(pattern.group(2)) + int(pattern.group(3)) / 60 + float(pattern.group(4)) / 3600 * (-1 if pattern.group(1) == 'S' else 1), decimalplaces)
                 longitude = round(int(pattern.group(6)) + int(pattern.group(7)) / 60 + float(pattern.group(8)) / 3600 * (-1 if pattern.group(5) == 'W' else 1), decimalplaces)

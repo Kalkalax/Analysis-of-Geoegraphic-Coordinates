@@ -98,7 +98,7 @@ if __name__ == "__main__":
     if config: 
         print("# Plik konfiguracyjny bazy danych załadowano poprawnie")
     else:
-        input("# Naciśnij Enter, aby zamknąć aplikację...")
+        input("# Naciśnij Enter, aby zamknąć aplikację...") # to chyba do zmiany
         sys.exit(1)
 
     print(config)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
             print("Tworzenie tabeli danych")
             databaseManager.createDatabaseTable()
         else: 
-            exitWithMessage("błąd bazy danych")
+            exitWithMessage("błąd bazy danych") # to chyba do zmiany
 
     while True:
         if databaseManager.checkDatabaseTableExistence():
@@ -129,13 +129,26 @@ if __name__ == "__main__":
             databaseManager.createDatabaseTable()
 
         else:
-            exitWithMessage("błąd bazy danych")
+            exitWithMessage("błąd bazy danych") # to chyba do zmiany
 
 
-    addedRow = databaseManager.insertData(dataFrame)
-    print(f"Dodano {addedRow} rekordów do bazy danych ")
+
+
+    if (addedRow := databaseManager.insertData(dataFrame)) is not None:
+        print(f"# Dodano {addedRow} nowych rekordów do bazy danych ")
+    else:
+        exitWithoutMessage()
+
+
+    if (dataFrame := databaseManager.getData()) is not None:
+        print(dataFrame)
+        print(f"# Pobrano {len(dataFrame)} rekordów z bazy danych ")
+    else:
+        exitWithoutMessage()
+
 
     #########################################################
+
 
 
 
