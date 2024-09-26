@@ -7,6 +7,10 @@ from configurationfliemenager import ConfigurationFlieMenager #klasa odpowiedzia
 
 from databasemanager import DatabaseManager 
 
+from mapcreator import MapCreator 
+
+from testy3 import SurfaceCreator
+
 
 import sys
 
@@ -148,6 +152,24 @@ if __name__ == "__main__":
 
 
     #########################################################
+
+    mapCreator = MapCreator(dataFrame)
+    mapCreator.createMap()
+    mapCreator.addPoint(dataFrame['coordinates'])
+    print("xd")
+    #pointsDataFrame = mapCreator.getData()
+    #print(pointsDataFrame)
+
+##################################################
+
+    surfaceCreator = SurfaceCreator()
+
+    startPointsID = surfaceCreator.startingPoints(dataFrame['coordinates'])
+    print(startPointsID)
+
+
+
+
 
 
 
