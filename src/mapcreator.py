@@ -15,7 +15,7 @@ class MapCreator:
         plt.ion()
 
         # Tworzenie figury i osi
-        self.fig, self.ax = plt.subplots(figsize=(7.00, 7.00), frameon=False)
+        self.fig, self.ax = plt.subplots(figsize=(8.00, 8.00), frameon=False)
 
         # Tworzenie mapy i zapisanie jej jako atrybut klasy
         self.map = Basemap(projection='merc', llcrnrlat=-85, urcrnrlat=85,
@@ -43,7 +43,7 @@ class MapCreator:
         
         
 
-    def addPoint(self, dataFrame):
+    def addPoint(self, dataFrame, color):
         # Pobieranie kolumny 'coordinates' z DataFrame
         self.points = dataFrame
         
@@ -58,9 +58,10 @@ class MapCreator:
             xpoint, ypoint = self.map(longitude, latitude)
 
             # Dodanie punktu na mapę (czerwony punkt 'r.')
-            self.map.plot(xpoint, ypoint, 'r.')
+            self.map.plot(xpoint, ypoint, color)
 
     # Odświeżenie wykresu
+        plt.pause(0.5)
         plt.draw()
 
 

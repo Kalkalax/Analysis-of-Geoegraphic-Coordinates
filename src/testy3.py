@@ -6,19 +6,68 @@ import pandas as pd
 class SurfaceCreator:
     def __init__(self):
         self.usedPointsID = None
+        self.usedPointsIDDataFrame = None
 
-    def startingPoints(self, dataFrame):
+    def searchStartingPoints(self, dataFrame):
 
-        points = dataFrame.iloc[:].str.split(',', expand=True)
-        points.columns = ['Latitude', 'Longitude']  # Nadawanie nazw kolumn
-        points[['Latitude', 'Longitude']] = points[['Latitude', 'Longitude']].astype(float)
+        unusedPoints = dataFrame.iloc[:].str.split(',', expand=True)
+        unusedPoints.columns = ['Latitude', 'Longitude']  # Nadawanie nazw kolumn
+        unusedPoints[['Latitude', 'Longitude']] = unusedPoints[['Latitude', 'Longitude']].astype(float)
 
-        points['Distance_from_origin'] = np.sqrt(points['Latitude']**2 + points['Longitude']**2)
-        print(points)
+        unusedPoints['Distance_from_origin'] = np.sqrt(unusedPoints['Latitude']**2 + unusedPoints['Longitude']**2)
+        print(unusedPoints)
         
-        self.usedPointsID = points['Distance_from_origin'].nsmallest(3).index.tolist()
+        self.usedPointsID = unusedPoints['Distance_from_origin'].nsmallest(3).index.tolist()
+        print(self.usedPointsID)
+
+
+        self.usedPointsIDDataFrame = unusedPoints.loc[self.usedPointsID] ##
+        print(self.usedPointsIDDataFrame)
+
+        self.unusedPoints = unusedPoints.drop(self.usedPointsID)
+        print(unusedPoints)
+
+        self.usedPointsDataFrame = dataFrame.loc[self.usedPointsID]
+
+        return self.usedPointsDataFrame
+    
+
+
+
+    def searchNextPoints(self, dataFrame):
+
+
         
-        return self.usedPointsID
+        distances = []
+        for _, start_point in self.usedPointsIDDataFrame.iterrows():
+             
+            # Obliczanie odległości euklidesowej między punktami startowymi a wszystkimi innymi punktami
+            dist = np.sqrt((self.unusedPoints['Latitude'] - start_point['Latitude'])**2 + 
+                            (self.unusedPoints['Longitude'] - start_point['Longitude'])**2)
+            distances.append(dist)
+
+        print(distances)
+
+        distance_df = pd.DataFrame(distances).T
+        distance_df.columns = [f"Distance_to_start_{i}" for i in range(1, len(start_point) + 1)]
+        distance_df['Min_Distance'] = distance_df.min(axis=1)
+        nearest_point_index = distance_df['Min_Distance'].idxmin()
+
+        self.usedPointsID += distance_df['Min_Distance'].nsmallest(1).index.tolist()
+        print(self.usedPointsID)
+        
+        nearest_point = self.unusedPoints.loc[nearest_point_index]
+        print(distance_df)
+        print(nearest_point)   
+
+        self.unusedPoints = self.unusedPoints.drop(nearest_point_index)
+        print(self.unusedPoints)
+
+        self.usedPointsDataFrame = dataFrame.loc[self.usedPointsID]
+
+        return self.usedPointsDataFrame
+
+
 
 # if __name__ == "__main__":
 

@@ -46,7 +46,7 @@ if __name__ == "__main__":
     else:
         exitWithoutMessage()
     
-    print(dataFrame) # <- do tąd jest git
+     # <- do tąd jest git
     
    
 
@@ -79,7 +79,6 @@ if __name__ == "__main__":
         exitWithMessage("bład w metadacie")  
 
     dataFrame = dataProcessor.getData()
-    print(dataFrame)
     #########################################################
 
 
@@ -155,17 +154,25 @@ if __name__ == "__main__":
 
     mapCreator = MapCreator(dataFrame)
     mapCreator.createMap()
-    mapCreator.addPoint(dataFrame['coordinates'])
-    print("xd")
-    #pointsDataFrame = mapCreator.getData()
-    #print(pointsDataFrame)
+    mapCreator.addPoint(dataFrame['coordinates'], "r.")
+
 
 ##################################################
 
     surfaceCreator = SurfaceCreator()
 
-    startPointsID = surfaceCreator.startingPoints(dataFrame['coordinates'])
+    startPointsID = surfaceCreator.searchStartingPoints(dataFrame['coordinates'])
     print(startPointsID)
+    mapCreator.addPoint(startPointsID, "b.")
+
+    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
+    mapCreator.addPoint(startPointsID, "b.")
+    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
+    mapCreator.addPoint(startPointsID, "b.")
+    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
+    mapCreator.addPoint(startPointsID, "b.")
+    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
+    mapCreator.addPoint(startPointsID, "b.")
 
 
 
