@@ -50,6 +50,7 @@ class SurfaceCreator:
 
         distance_df = pd.DataFrame(distances).T
         distance_df.columns = [f"Distance_to_start_{i}" for i in range(1, len(start_point) + 1)]
+        
         distance_df['Min_Distance'] = distance_df.min(axis=1)
         nearest_point_index = distance_df['Min_Distance'].idxmin()
 

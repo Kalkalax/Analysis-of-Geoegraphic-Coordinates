@@ -9,10 +9,12 @@ from databasemanager import DatabaseManager
 
 from mapcreator import MapCreator 
 
-from testy3 import SurfaceCreator
+from surfacecreator import SurfaceCreator
+
 
 
 import sys
+from tabulate import tabulate
 
 def exitWithMessage(message):
     print(message)
@@ -25,7 +27,8 @@ def exitWithoutMessage():
 
 if __name__ == "__main__":
 
-    #Inicjalizacja FilePathRequester i pobranie lokalizacji pliku CSV
+    # Inicjalizacja FilePathRequester i pobranie lokalizacji pliku CSV
+    ###################################################################
 
     print("# Podaj lokalizacje pliku CSV z punktami współrzędnych")
 
@@ -36,7 +39,8 @@ if __name__ == "__main__":
     else:
         exitWithMessage("# Nie wskazano lokalizacji pliku do odczytu")
 
-    #Inicjalizacja FileReader 
+    # Inicjalizacja FileReader i wczytanie zawartośći pliku
+    ################################################################### 
 
     fileReader = FileReader(filePath)
 
@@ -45,47 +49,74 @@ if __name__ == "__main__":
         print("# Wczytywanie pliku CSV przebiegło prawidłowo")
     else:
         exitWithoutMessage()
-    
-     # <- do tąd jest git
-    
+
+    print()
+    print(tabulate(dataFrame, headers = 'keys', tablefmt = 'fancy_grid'))
+    print()
    
+    # Inicjalizacja DataProcesor, weryfikacja i przetworzenie danych 
+    # przed wstawieniem do bazy danych
+    ###################################################################
+    # -DODAĆ GENEROWANIE RAPORTU Z WYKRYTYMI BŁĘDAMI JEŚLI SIĘ POJAWIŁY
+    ###################################################################
 
-    #Tu piszemy DataProcesor
-    dataProcessor = DataProcessor(dataFrame)
+    dataProcessor = DataProcessor()
+    
+    errorStatus, errorList, dataFrame = dataProcessor.checkPointName(dataFrame)
+
+    if not errorStatus:
+        print("# Wszystkie punkty współrzędnych w pliku posiadają poprawne nazwy")
+    else:
+        for error in errorList:
+            print(error)
+    
+    errorStatus, errorList, dataFrame = dataProcessor.checkAndConvertCoordinates(dataFrame)
+
+    if not errorStatus:
+        print("# Wszystkie punkty współrzędnych w pliku posiadają odpowiedni format współrzędnych geograficznych")
+    else:
+        for error in errorList:
+            print(error)
+
+    errorStatus, errorList, dataFrame = dataProcessor.checkAltitude(dataFrame)
+    
+    if not errorStatus:
+        print("# Wszystkie punkty współrzędnych w pliku posiadają odpowiedni format wysokości n.p.m")
+    else:
+        for error in errorList:
+            print(error)
+
+    errorStatus, errorList, dataFrame = dataProcessor.checkDataAndTime(dataFrame)
+
+    if not errorStatus:
+        print("# Wszystkie punkty współrzędnych w pliku posiadają odpowiedni format znaczników czasowych")
+    else:
+        for error in errorList:
+            print(error)
+
+    errorStatus, errorList, dataFrame = dataProcessor.checkMetadata(dataFrame)
+
+    if not errorStatus:
+        print("# Wszystkie punkty współrzędnych w pliku posiadają odpowiedni format matadanych")
+    else:
+        for error in errorList:
+            print(error)
+
+    if not (dataValidationErrorStatus := dataProcessor.getDataValidationErrorStatus()):
+        print()
+        print("# Weryfikacja wszystkich danych z pliku przebiegła prawidłowo")
+        print()
+    else:
+        print()
+        exitWithMessage("! Weryfikacja wszystkich danych z pliku nie przebiegła prawidłowo")
+
     #########################################################
-    if dataProcessor.checkPointName():
-        print("Nazwa poprawna")
-    else:
-        exitWithMessage("bład w nazwie")
 
-    if dataProcessor.checkAndConvertCoordinates():
-        print("kordynaty ok")
-    else:
-        exitWithMessage("bład w kordynatach")
-
-    if dataProcessor.checkAltitude():
-        print("wysokosc ok")
-    else:
-        exitWithMessage("bład w wysokosci")
-
-    if dataProcessor.checkDataAndTime():
-        print("data ok")
-    else:
-        exitWithMessage("bład w dacie")  
-
-    if dataProcessor.checkMetadata():
-        print("metadata ok")
-    else:
-        exitWithMessage("bład w metadacie")  
-
-    dataFrame = dataProcessor.getData()
-    #########################################################
-
-
-
+ # <- do tąd jest git
     
 
-    #Inicjalizacja ConfigurationParameters i ConfigurationFlieMenager oraz wczytanie konfiguracji bądz jej utworzenie
+    # Inicjalizacja ConfigurationParameters i ConfigurationFlieMenager 
+    # oraz wczytanie konfiguracji bądz jej utworzenie
 
     configurationParameters = ConfigurationParameters()
     configurationFlieMenager = ConfigurationFlieMenager(configurationParameters)
@@ -148,9 +179,22 @@ if __name__ == "__main__":
         print(f"# Pobrano {len(dataFrame)} rekordów z bazy danych ")
     else:
         exitWithoutMessage()
+#########################################################
+#########################################################
+#########################################################
+    pointsDistanceMatrix = dataProcessor.createPointsDistanceMatrix(dataFrame)
+
+    print()
+    #print(tabulate(pointsDistanceMatrix, headers = 'keys', tablefmt = 'fancy_grid'))
+    print()
 
 
-    #########################################################
+
+
+
+#########################################################
+#########################################################
+#########################################################
 
     mapCreator = MapCreator(dataFrame)
     mapCreator.createMap()
