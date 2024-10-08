@@ -182,15 +182,21 @@ if __name__ == "__main__":
 #########################################################
 #########################################################
 #########################################################
-    pointsDistanceMatrix = dataProcessor.createPointsDistanceMatrix(dataFrame)
+    pointsDistanceMatrix, mergedRows = dataProcessor.createPointsDistanceMatrix(dataFrame)
 
-    print()
-    #print(tabulate(pointsDistanceMatrix, headers = 'keys', tablefmt = 'fancy_grid'))
-    print()
+    if mergedRows == 0:
+        print("# Wszystkie pobrane lokalizacje z bazy danych są unikalne")
+    else:
+        print(f"# Scalono {mergedRows} lokalizacje z bazy danych")
 
 
+    print(pointsDistanceMatrix)
 
-
+    errorStatus, pointsIDList = dataProcessor.findClosestTrianglePoints(pointsDistanceMatrix)
+    print(f"Czy błąd: {errorStatus}")
+    print(f"Lista punktów: {pointsIDList}")
+    
+    exitWithoutMessage() #----------------------------------------------
 
 #########################################################
 #########################################################
@@ -199,7 +205,6 @@ if __name__ == "__main__":
     mapCreator = MapCreator(dataFrame)
     mapCreator.createMap()
     mapCreator.addPoint(dataFrame['coordinates'], "r.")
-
 
 ##################################################
 

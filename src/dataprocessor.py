@@ -1,4 +1,3 @@
-#import pandas as pd
 import re
 import numpy as np
 import pandas as pd
@@ -6,6 +5,8 @@ import pandas as pd
 class DataProcessor:
     def __init__(self):
         self.dataValidationErrorStatus = False
+        self.usedPointsIDList = []
+
 
     def checkPointName(self, dataFrame):
 
@@ -109,52 +110,80 @@ class DataProcessor:
         return self.dataValidationErrorStatus
     
     def createPointsDistanceMatrix(self, dataFrame):
-        
+
+        inputDataFrameSize = 0
+        outputDataFrameSize = 0
+        mergedRows = 0
+
         pointsDistanceMatrix = dataFrame['coordinates'].str.split(',', expand=True)
+
+        inputDataFrameSize = len(pointsDistanceMatrix)
 
         pointsDistanceMatrix.columns = ['Latitude', 'Longitude']  # Nadawanie nazw kolumn
         pointsDistanceMatrix[['Latitude', 'Longitude']] = pointsDistanceMatrix[['Latitude', 'Longitude']].astype(float)
         
         pointsDistanceMatrix['Distance_from_origin'] = np.sqrt(pointsDistanceMatrix['Latitude']**2 + pointsDistanceMatrix['Longitude']**2)
 
-
-
-
-        
-        # Obliczanie macierzy odległości
-        distance_matrix = pd.DataFrame(index=pointsDistanceMatrix.index, columns=pointsDistanceMatrix.index)
+        distance_matrix = pd.DataFrame(index = pointsDistanceMatrix.index, columns = pointsDistanceMatrix.index)
 
         for i, start_point in pointsDistanceMatrix.iterrows():
             for j, end_point in pointsDistanceMatrix.iterrows():
-                if i != j:  # Unikaj obliczania odległości punktu do samego siebie
-                    dist = np.sqrt((end_point['Latitude'] - start_point['Latitude']) ** 2 + 
+                if i != j:
+                    distance = np.sqrt((end_point['Latitude'] - start_point['Latitude']) ** 2 + 
                                     (end_point['Longitude'] - start_point['Longitude']) ** 2)
-                    distance_matrix.iloc[i, j] = dist
+                    distance_matrix.iloc[i, j] = distance
                 else:
-                    distance_matrix.iloc[i, j] = "NaN"  # Odległość do samego siebie
+                    distance_matrix.iloc[i, j] = np.nan
 
-        # Ustawianie nazw kolumn w macierzy odległości
         distance_matrix.columns = [f'Distance_to_point_{i}' for i in range(len(pointsDistanceMatrix))]
         distance_matrix.index = pointsDistanceMatrix.index
 
-        # Dodanie macierzy odległości do DataFrame
         pointsDistanceMatrix = pd.concat([pointsDistanceMatrix, distance_matrix], axis=1)
 
-        # Wyświetlenie końcowego DataFrame
-        print(pointsDistanceMatrix)
+        pointsDistanceMatrix = pointsDistanceMatrix.drop_duplicates(subset=['Latitude', 'Longitude'])
+        
+        outputDataFrameSize = len(pointsDistanceMatrix)
+        mergedRows = inputDataFrameSize - outputDataFrameSize
+        
+        return pointsDistanceMatrix, mergedRows
+    
+    def findClosestTrianglePoints(self, pointsDistanceMatrix):
 
-                    
-        #     # Obliczanie odległości euklidesowej między punktami startowymi a wszystkimi innymi punktami
-        #     dist = np.sqrt((self.unusedPoints['Latitude'] - start_point['Latitude'])**2 + 
-        #                     (self.unusedPoints['Longitude'] - start_point['Longitude'])**2)
-        #     distances.append(dist)
+        errorStatus = False
 
-        # print(distances)
+        if len(pointsDistanceMatrix) < 3:
 
-        # distance_df = pd.DataFrame(distances).T
-        # distance_df.columns = [f"Distance_to_start_{i}" for i in range(1, len(start_point) + 1)]
+            errorStatus = True
 
+        else:
+            
+            pointID = pointsDistanceMatrix.nsmallest(1, "Distance_from_origin").index[0]
+            pointsIDList = [pointID]
 
-        return pointsDistanceMatrix
+            row = pointsDistanceMatrix.iloc[[pointID]]
+        
+            cleanedRow = row.iloc[:, 3:]
+            cleanedRow = cleanedRow.dropna(axis=1, how='any')
+
+            pointID = cleanedRow.idxmin(axis=1)
+
+            #musimy wyciagnać który punkt zostal znaleziony
+            pointID = pointID.iloc[0]
+            pointID = int(pointID.split('_')[-1])
+            
+            pointsIDList += [pointID]
+
+            row = pointsDistanceMatrix
+            cleanedRow = row.iloc[:, 3:]
+            cleanedRow = cleanedRow.drop(pointsIDList)
+            cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'] = cleanedRow[f'Distance_to_point_{pointsIDList[0]}'] + cleanedRow[f'Distance_to_point_{pointsIDList[-1]}']
+            
+            pointID = cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'].idxmin()
+            pointsIDList += [pointID]
+
+            self.usedPointsIDList = pointsIDList
+
+        return errorStatus, pointsIDList
+        
 
         
