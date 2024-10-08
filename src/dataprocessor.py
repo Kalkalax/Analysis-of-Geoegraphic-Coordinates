@@ -140,7 +140,18 @@ class DataProcessor:
 
         pointsDistanceMatrix = pd.concat([pointsDistanceMatrix, distance_matrix], axis=1)
 
-        pointsDistanceMatrix = pointsDistanceMatrix.drop_duplicates(subset=['Latitude', 'Longitude'])
+        #pointsDistanceMatrix = pointsDistanceMatrix.drop_duplicates(subset=['Latitude', 'Longitude'])
+
+        #Nowe usuwanie duplikatów
+        duplicateLocations = pointsDistanceMatrix[pointsDistanceMatrix.duplicated(subset=['Latitude', 'Longitude'], keep='first')]
+        duplicateLocationsID = duplicateLocations.index.tolist()
+
+        for ID in duplicateLocationsID:
+
+            pointsDistanceMatrix = pointsDistanceMatrix.drop(ID)
+            pointsDistanceMatrix = pointsDistanceMatrix.drop(columns = f"Distance_to_point_{ID}")
+
+
         
         outputDataFrameSize = len(pointsDistanceMatrix)
         mergedRows = inputDataFrameSize - outputDataFrameSize
@@ -150,6 +161,7 @@ class DataProcessor:
     def findClosestTrianglePoints(self, pointsDistanceMatrix):
 
         errorStatus = False
+        pointsIDList = []
 
         if len(pointsDistanceMatrix) < 3:
 
@@ -185,5 +197,7 @@ class DataProcessor:
 
         return errorStatus, pointsIDList
         
+    def findNextClosestPoints(self):
 
+        pass
         
