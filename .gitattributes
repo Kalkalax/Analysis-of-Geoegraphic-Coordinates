@@ -1,0 +1,5 @@
+# Folder with source code
+src/**/*.py linguist-language=Python
+
+# Folder with test code
+tests/**/*.py linguist-language=Python
