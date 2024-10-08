@@ -7,9 +7,12 @@ from configurationfliemenager import ConfigurationFlieMenager #klasa odpowiedzia
 
 from databasemanager import DatabaseManager 
 
-from mapcreator import MapCreator 
+#from mapcreator import MapCreator 
+from new_mapcreator import MapCreator
 
 from surfacecreator import SurfaceCreator
+
+
 
 
 
@@ -166,8 +169,6 @@ if __name__ == "__main__":
             exitWithMessage("błąd bazy danych") # to chyba do zmiany
 
 
-
-
     if (addedRow := databaseManager.insertData(dataFrame)) is not None:
         print(f"# Dodano {addedRow} nowych rekordów do bazy danych ")
     else:
@@ -193,8 +194,24 @@ if __name__ == "__main__":
     print(pointsDistanceMatrix)
 
     errorStatus, pointsIDList = dataProcessor.findClosestTrianglePoints(pointsDistanceMatrix)
-    print(f"Czy błąd: {errorStatus}")
+
+    if errorStatus:
+        exitWithMessage("# Liczba punktów nie jest wystarczająca do wyznaczenia płaszczyzny")
+
     print(f"Lista punktów: {pointsIDList}")
+
+
+
+    #########################################################
+
+    mapCreator = MapCreator(pointsDistanceMatrix)
+    mapCreator.createMap()
+
+    mapCreator.markAllPoints()
+
+
+
+
     
     exitWithoutMessage() #----------------------------------------------
 
