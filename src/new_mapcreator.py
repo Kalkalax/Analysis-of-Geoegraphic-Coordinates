@@ -42,14 +42,33 @@ class MapCreator:
 
     def markAllPoints(self):
 
-        for longitude, latitude in zip(self.pointsDistanceMatrix['Longitude'], self.pointsDistanceMatrix['Latitude']):
+        for latitude, longitude  in zip(self.pointsDistanceMatrix['Latitude'], self.pointsDistanceMatrix['Longitude']):    
             
             xpoint, ypoint = self.map(longitude, latitude)
             self.map.plot(xpoint, ypoint, "r.")
         
+        #plt.pause(0.5)
+        #plt.draw()
+
+    def changePointColor(self, pointsIDList):
+
+        #plt.pause(0.5)
+
+        for point in pointsIDList:
+
+            #print(point)
+            row = self.pointsDistanceMatrix.loc[[point]]
+           # print(row)
+            latitude = row['Latitude'].values[0]
+            longitude = row['Longitude'].values[0]
+            #print(latitude.values, longitude.values)
+            xpoint, ypoint = self.map(longitude, latitude)
+            self.map.plot(xpoint, ypoint, "b.")
+
+        #plt.draw()
+
+    def updatChart(self):
+
         plt.pause(0.5)
         plt.draw()
-
-    def changePointColor(self):
-
-        pass
+        

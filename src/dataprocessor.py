@@ -158,6 +158,8 @@ class DataProcessor:
         
         return pointsDistanceMatrix, mergedRows
     
+    # szukamy najblizszego punktu od środka, a następnie punkt który jest najbliżej niego, 
+    # następnie szukamy punktu ktorych suma odleglości do dwoch poprzednich jest najmniejsza
     def findClosestTrianglePoints(self, pointsDistanceMatrix):
 
         errorStatus = False
@@ -178,6 +180,7 @@ class DataProcessor:
             cleanedRow = cleanedRow.dropna(axis=1, how='any')
 
             pointID = cleanedRow.idxmin(axis=1)
+            #print("Tutaj",pointID)
 
             #musimy wyciagnać który punkt zostal znaleziony
             pointID = pointID.iloc[0]
@@ -189,15 +192,44 @@ class DataProcessor:
             cleanedRow = row.iloc[:, 3:]
             cleanedRow = cleanedRow.drop(pointsIDList)
             cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'] = cleanedRow[f'Distance_to_point_{pointsIDList[0]}'] + cleanedRow[f'Distance_to_point_{pointsIDList[-1]}']
-            
+            #print("Tutaj2", cleanedRow)
             pointID = cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'].idxmin()
+            #print("Tutaj2",pointID)
             pointsIDList += [pointID]
 
             self.usedPointsIDList = pointsIDList
 
         return errorStatus, pointsIDList
         
-    def findNextClosestPoints(self):
+    def findNextClosestPoints(self, pointsDistanceMatrix):
 
-        pass
+        #print(pointsDistanceMatrix)
+        #print(self.usedPointsIDList)
+
+        #cleanedRow = pointsDistanceMatrix.iloc[:, 3:]
+        #cleanedRow = cleanedRow.loc[self.usedPointsIDList]
+        cleanedRow = pointsDistanceMatrix.loc[self.usedPointsIDList, pointsDistanceMatrix.columns[3:]]
+
+
+        for ID in self.usedPointsIDList:
+
+            cleanedRow = cleanedRow.drop(columns = f"Distance_to_point_{ID}")
+
+        if cleanedRow.empty:
+            return None
+        else:
         
+            #print(cleanedRow)
+            
+            #min_value = cleanedRow.min().min()
+            pointID = cleanedRow.min().idxmin()
+            pointID = int(pointID.split('_')[-1])
+
+            #print(min_value)
+            #print(pointID)
+
+            pointIDList = [pointID]
+
+            self.usedPointsIDList += pointIDList
+
+            return pointIDList

@@ -190,26 +190,47 @@ if __name__ == "__main__":
     else:
         print(f"# Scalono {mergedRows} lokalizacje z bazy danych")
 
+###
+
+    mapCreator = MapCreator(pointsDistanceMatrix)
+    mapCreator.createMap()
+    mapCreator.markAllPoints()
+    mapCreator.updatChart()
+
+###
 
     print(pointsDistanceMatrix)
+
 
     errorStatus, pointsIDList = dataProcessor.findClosestTrianglePoints(pointsDistanceMatrix)
 
     if errorStatus:
         exitWithMessage("# Liczba punktów nie jest wystarczająca do wyznaczenia płaszczyzny")
+    else:
+        print(f"# Rozpoczeto wyznaczanie figury łączącej naniesione punkty")
 
-    print(f"Lista punktów: {pointsIDList}")
 
-
+    pointsDistanceMatrixSize = len(pointsDistanceMatrix)
+    print(f"# Wykorzystane punkty: {len(pointsIDList)} / {pointsDistanceMatrixSize}")
 
     #########################################################
 
-    mapCreator = MapCreator(pointsDistanceMatrix)
-    mapCreator.createMap()
+    mapCreator.changePointColor(pointsIDList)
+    mapCreator.updatChart()
 
-    mapCreator.markAllPoints()
+    while True:
 
+        pointID = dataProcessor.findNextClosestPoints(pointsDistanceMatrix)
+        
+        if pointID is None:
+            break
+        else:
+            print(f"# Wykorzystane punkty: {len(dataProcessor.usedPointsIDList)} / {pointsDistanceMatrixSize}")
 
+            mapCreator.changePointColor(pointID)
+            mapCreator.updatChart()
+
+            
 
 
     
@@ -218,35 +239,3 @@ if __name__ == "__main__":
 #########################################################
 #########################################################
 #########################################################
-
-    mapCreator = MapCreator(dataFrame)
-    mapCreator.createMap()
-    mapCreator.addPoint(dataFrame['coordinates'], "r.")
-
-##################################################
-
-    surfaceCreator = SurfaceCreator()
-
-    startPointsID = surfaceCreator.searchStartingPoints(dataFrame['coordinates'])
-    print(startPointsID)
-    mapCreator.addPoint(startPointsID, "b.")
-
-    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
-    mapCreator.addPoint(startPointsID, "b.")
-    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
-    mapCreator.addPoint(startPointsID, "b.")
-    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
-    mapCreator.addPoint(startPointsID, "b.")
-    startPointsID = surfaceCreator.searchNextPoints(dataFrame['coordinates'])
-    mapCreator.addPoint(startPointsID, "b.")
-
-
-
-
-
-
-
-
-
-    exitWithMessage("")
-
