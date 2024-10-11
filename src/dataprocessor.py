@@ -209,7 +209,7 @@ class DataProcessor:
         #cleanedRow = pointsDistanceMatrix.iloc[:, 3:]
         #cleanedRow = cleanedRow.loc[self.usedPointsIDList]
         cleanedRow = pointsDistanceMatrix.loc[self.usedPointsIDList, pointsDistanceMatrix.columns[3:]]
-
+        #print(cleanedRow)
 
         for ID in self.usedPointsIDList:
 

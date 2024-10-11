@@ -67,6 +67,33 @@ class MapCreator:
 
         #plt.draw()
 
+
+    def drawLineConnectingPoints(self, sortedPointsIDList):
+
+        #sortedPointsIDList = sortedPointsIDList.append(sortedPointsIDList[0])
+        self.sortedPointsIDList = sortedPointsIDList + [sortedPointsIDList[0]]
+        print(self.sortedPointsIDList)
+
+        print("Rysowane połączenia")
+
+        for i in range((len(self.sortedPointsIDList)-1)):
+
+            pointAID = self.sortedPointsIDList[i]
+            pointBID = self.sortedPointsIDList[i+1]
+
+            pointALatitude = self.pointsDistanceMatrix.loc[pointAID]['Latitude']
+            pointALongitude = self.pointsDistanceMatrix.loc[pointAID]['Longitude']
+
+            pointBLatitude = self.pointsDistanceMatrix.loc[pointBID]['Latitude']
+            pointBLongitude = self.pointsDistanceMatrix.loc[pointBID]['Longitude']
+
+            print(pointAID, pointALatitude, pointALongitude, "-->", pointBID, pointBLatitude, pointBLongitude)
+
+            xPointA, yPointA = self.map(pointALongitude, pointALatitude)
+            xPointB, yPointB = self.map(pointBLongitude, pointBLatitude)
+            self.map.plot([xPointA, xPointB], [yPointA, yPointB], linewidth=1, color='b')
+
+
     def updatChart(self):
 
         plt.pause(0.5)

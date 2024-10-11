@@ -7,10 +7,9 @@ from configurationfliemenager import ConfigurationFlieMenager #klasa odpowiedzia
 
 from databasemanager import DatabaseManager 
 
-#from mapcreator import MapCreator 
 from new_mapcreator import MapCreator
 
-from surfacecreator import SurfaceCreator
+
 
 
 
@@ -216,7 +215,13 @@ if __name__ == "__main__":
     #########################################################
 
     mapCreator.changePointColor(pointsIDList)
+    print("1", pointsIDList)
+
+    mapCreator.drawLineConnectingPoints(pointsIDList)
+    print("2", pointsIDList)
     mapCreator.updatChart()
+
+    #exitWithoutMessage() #----------------------------------------------
 
     while True:
 
