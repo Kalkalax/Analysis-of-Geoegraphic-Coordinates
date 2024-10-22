@@ -2,10 +2,17 @@ import re
 import numpy as np
 import pandas as pd
 
+from mpl_toolkits.basemap import Basemap
+import numpy as np
+import matplotlib.pyplot as plt
+
 class DataProcessor:
     def __init__(self):
         self.dataValidationErrorStatus = False
         self.usedPointsIDList = []
+        self.fig, self.ax = plt.subplots(figsize=(8.00, 8.00), frameon=False)
+        self.map = Basemap(projection='merc', llcrnrlat=-85, urcrnrlat=85, llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c', ax=self.ax) 
+        # TRZEBA TU ZROBIĆ POBIERANIE SELF.MAP I SELF.FIG Z MAPCREATOR
 
 
     def checkPointName(self, dataFrame):
@@ -186,7 +193,7 @@ class DataProcessor:
             pointID = pointID.iloc[0]
             pointID = int(pointID.split('_')[-1])
             
-            pointsIDList += [pointID]
+            pointsIDList = pointsIDList + [pointID]
 
             row = pointsDistanceMatrix
             cleanedRow = row.iloc[:, 3:]
@@ -198,10 +205,12 @@ class DataProcessor:
             pointsIDList += [pointID]
 
             self.usedPointsIDList = pointsIDList
+            
 
         return errorStatus, pointsIDList
         
     def findNextClosestPoints(self, pointsDistanceMatrix):
+
 
         #print(pointsDistanceMatrix)
         #print(self.usedPointsIDList)
@@ -219,17 +228,89 @@ class DataProcessor:
             return None
         else:
         
-            #print(cleanedRow)
-            
-            #min_value = cleanedRow.min().min()
             pointID = cleanedRow.min().idxmin()
             pointID = int(pointID.split('_')[-1])
 
-            #print(min_value)
-            #print(pointID)
+            newPointID = [pointID]
+            print("0", newPointID)
 
-            pointIDList = [pointID]
+            #self.usedPointsIDList += newPointID
+            print("01", newPointID)
+            return newPointID
+        
+    def sortingPointsList(self, pointsDistanceMatrix, pointIDList, newPointID = None):
 
-            self.usedPointsIDList += pointIDList
+        print("03", pointIDList)
+        cleanedRow = pointsDistanceMatrix.loc[pointIDList]
+        newRow = pointsDistanceMatrix.loc[newPointID]
 
-            return pointIDList
+        print("04", cleanedRow)
+        
+
+        pointID = cleanedRow[f'Distance_to_point_{newPointID[0]}'].idxmin()
+
+        print(f"Najbliższy punkt od nowego punktu {newPointID} to {pointID}")
+
+        pointListIndex = pointIDList.index(pointID)
+
+        print(f"Punkt {pointID+1} znajduje się na miejscu {pointListIndex}")
+
+        ###
+        
+        self.newPointIDList = pointIDList.copy()
+        self.newPointIDList.insert(pointListIndex, newPointID[0])
+        sortedPointsIDList = self.newPointIDList 
+        print(f"posortowana lista do weryfikacji {sortedPointsIDList}")
+
+        import itertools
+
+        
+
+        # Generowanie wszystkich kombinacji 2-elementowych
+        allPointsCombinations = list(itertools.combinations(sortedPointsIDList, 2))
+
+        # Wyświetlenie wszystkich unikalnych kombinacji
+        for i, lineA in enumerate(allPointsCombinations):
+            for j, lineB in enumerate(allPointsCombinations):
+                # Unikamy porównywania tej samej linii lub porównania jej odwrotności
+                if i < j:
+                    print(lineA[0], lineA[-1], lineB[0], lineB[-1])
+
+                    
+                    # pointAStart = pointsDistanceMatrix.loc[lineA[0], ['Latitude', 'Longitude']].tolist()
+                    # pointAEnd = pointsDistanceMatrix.loc[lineA[-1], ['Latitude', 'Longitude']].tolist()
+                    # pointBStart = pointsDistanceMatrix.loc[lineB[0], ['Latitude', 'Longitude']].tolist()
+                    # pointBEnd = pointsDistanceMatrix.loc[lineB[-1], ['Latitude', 'Longitude']].tolist()
+
+                    # print(pointAStart)
+                    # print(pointAEnd)
+                    # print(pointBStart)
+                    # print(pointBEnd)
+                    
+                    pointAStartLatitude, pointAStartLongitude = pointsDistanceMatrix.loc[lineA[0], ['Latitude', 'Longitude']].values
+                    pointAEndLatitude, pointAEndLongitude = pointsDistanceMatrix.loc[lineA[-1], ['Latitude', 'Longitude']].values
+                    pointBStartLatitude, pointBStartLongitude = pointsDistanceMatrix.loc[lineB[0], ['Latitude', 'Longitude']].values
+                    pointBEndLatitude, pointBEndLongitude = pointsDistanceMatrix.loc[lineB[-1], ['Latitude', 'Longitude']].values
+
+                    xpointAStart, ypointAStart = self.map(pointAStartLongitude, pointAStartLatitude)
+                    xpointAEnd, ypointAEnd = self.map(pointAEndLongitude, pointAEndLatitude)
+                    xpointBStar, ypointBStar = self.map(pointBStartLongitude, pointBStartLatitude)
+                    xpointBEnd, ypointBEnd = self.map(pointBEndLongitude, pointBEndLatitude)
+
+                    print(xpointAStart, ypointAStart)
+                    print(xpointAEnd, ypointAEnd)
+                    print(xpointBStar, ypointBStar)
+                    print(xpointBEnd, ypointBEnd)
+
+                    print("")
+
+
+
+
+
+
+        
+
+
+
+

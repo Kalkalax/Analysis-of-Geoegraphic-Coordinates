@@ -58,7 +58,7 @@ class MapCreator:
 
             #print(point)
             row = self.pointsDistanceMatrix.loc[[point]]
-           # print(row)
+            #print(row)
             latitude = row['Latitude'].values[0]
             longitude = row['Longitude'].values[0]
             #print(latitude.values, longitude.values)
@@ -72,7 +72,7 @@ class MapCreator:
 
         #sortedPointsIDList = sortedPointsIDList.append(sortedPointsIDList[0])
         self.sortedPointsIDList = sortedPointsIDList + [sortedPointsIDList[0]]
-        print(self.sortedPointsIDList)
+        #print(self.sortedPointsIDList)
 
         print("Rysowane połączenia")
 

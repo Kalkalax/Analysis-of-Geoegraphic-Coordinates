@@ -223,24 +223,32 @@ if __name__ == "__main__":
 
     #exitWithoutMessage() #----------------------------------------------
 
-    while True:
+    #while True:
+    for i in range(1):
 
-        pointID = dataProcessor.findNextClosestPoints(pointsDistanceMatrix)
+        newPointID = dataProcessor.findNextClosestPoints(pointsDistanceMatrix)
+        print("New point:", newPointID)
+        print("3", pointsIDList)
+        dataProcessor.sortingPointsList(pointsDistanceMatrix, pointsIDList, newPointID)
+        print("4", pointsIDList)
+
         
-        if pointID is None:
+        if newPointID is None:
             break
         else:
             print(f"# Wykorzystane punkty: {len(dataProcessor.usedPointsIDList)} / {pointsDistanceMatrixSize}")
 
-            mapCreator.changePointColor(pointID)
+            mapCreator.changePointColor(newPointID)
             mapCreator.updatChart()
+
+            
 
             
 
 
     
-    exitWithoutMessage() #----------------------------------------------
-
+    
+exitWithoutMessage()
 #########################################################
 #########################################################
 #########################################################
