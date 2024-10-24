@@ -69,10 +69,16 @@ class MapCreator:
 
 
     def drawLineConnectingPoints(self, sortedPointsIDList):
+    # Sprawdzenie, czy istnieją narysowane linie i ich usunięcie
+        if hasattr(self, 'plotted_lines'):
+            for line in self.plotted_lines:
+                line.remove()
+            self.plotted_lines.clear()  # Opróżnij listę po usunięciu linii
+        else:
+            self.plotted_lines = []  # Utworzenie listy, jeśli nie istnieje
 
-        #sortedPointsIDList = sortedPointsIDList.append(sortedPointsIDList[0])
+        # Dodaj punkt końcowy, aby zamknąć pętlę
         self.sortedPointsIDList = sortedPointsIDList + [sortedPointsIDList[0]]
-        #print(self.sortedPointsIDList)
 
         print("Rysowane połączenia")
 
@@ -91,7 +97,10 @@ class MapCreator:
 
             xPointA, yPointA = self.map(pointALongitude, pointALatitude)
             xPointB, yPointB = self.map(pointBLongitude, pointBLatitude)
-            self.map.plot([xPointA, xPointB], [yPointA, yPointB], linewidth=1, color='b')
+            
+            # Rysowanie linii i zapisywanie obiektów linii do listy
+            line, = self.map.plot([xPointA, xPointB], [yPointA, yPointB], linewidth=1, color='b')
+            self.plotted_lines.append(line)  # Dodaj obiekt linii do listy
 
 
     def updatChart(self):

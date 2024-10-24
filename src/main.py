@@ -224,23 +224,31 @@ if __name__ == "__main__":
     #exitWithoutMessage() #----------------------------------------------
 
     #while True:
-    for i in range(1):
+    for i in range(4):
 
         newPointID = dataProcessor.findNextClosestPoints(pointsDistanceMatrix)
         print("New point:", newPointID)
         print("3", pointsIDList)
-        dataProcessor.sortingPointsList(pointsDistanceMatrix, pointsIDList, newPointID)
-        print("4", pointsIDList)
-
         
+
+        # Sprawdzamy czy mamy nowy punkt dod dodania na mape 
         if newPointID is None:
             break
         else:
-            print(f"# Wykorzystane punkty: {len(dataProcessor.usedPointsIDList)} / {pointsDistanceMatrixSize}")
-
+            
+            # Kolorujemy nowy punkt przy starym połączeniu lini
             mapCreator.changePointColor(newPointID)
             mapCreator.updatChart()
 
+            # Sortujemy odpowiednio punkty do wyznaczenia nowej lini łączącej
+            pointsIDList = dataProcessor.sortingPointsList(pointsDistanceMatrix, pointsIDList, newPointID)
+            print("4", pointsIDList)
+
+            # Nanosimy nowy układ lini na wykres i wymazujemy stary
+            mapCreator.drawLineConnectingPoints(pointsIDList)
+            mapCreator.updatChart()
+
+            
             
 
             

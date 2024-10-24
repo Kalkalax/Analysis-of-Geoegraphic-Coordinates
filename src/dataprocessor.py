@@ -6,6 +6,9 @@ from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
 
+import itertools
+
+
 class DataProcessor:
     def __init__(self):
         self.dataValidationErrorStatus = False
@@ -234,7 +237,7 @@ class DataProcessor:
             newPointID = [pointID]
             print("0", newPointID)
 
-            #self.usedPointsIDList += newPointID
+            self.usedPointsIDList = self.usedPointsIDList + newPointID
             print("01", newPointID)
             return newPointID
         
@@ -242,10 +245,9 @@ class DataProcessor:
 
         print("03", pointIDList)
         cleanedRow = pointsDistanceMatrix.loc[pointIDList]
-        newRow = pointsDistanceMatrix.loc[newPointID]
+        #newRow = pointsDistanceMatrix.loc[newPointID]
 
         print("04", cleanedRow)
-        
 
         pointID = cleanedRow[f'Distance_to_point_{newPointID[0]}'].idxmin()
 
@@ -253,7 +255,7 @@ class DataProcessor:
 
         pointListIndex = pointIDList.index(pointID)
 
-        print(f"Punkt {pointID+1} znajduje się na miejscu {pointListIndex}")
+        print(f"Punkt {pointID} znajduje się na miejscu {pointListIndex+1}")
 
         ###
         
@@ -262,51 +264,68 @@ class DataProcessor:
         sortedPointsIDList = self.newPointIDList 
         print(f"posortowana lista do weryfikacji {sortedPointsIDList}")
 
-        import itertools
-
+        
         
 
         # Generowanie wszystkich kombinacji 2-elementowych
         allPointsCombinations = list(itertools.combinations(sortedPointsIDList, 2))
 
-        # Wyświetlenie wszystkich unikalnych kombinacji
+        #Wyświetlenie wszystkich unikalnych kombinacji
         for i, lineA in enumerate(allPointsCombinations):
             for j, lineB in enumerate(allPointsCombinations):
                 # Unikamy porównywania tej samej linii lub porównania jej odwrotności
                 if i < j:
-                    print(lineA[0], lineA[-1], lineB[0], lineB[-1])
+                    #print(lineA[0], lineA[-1], lineB[0], lineB[-1])
 
                     
-                    # pointAStart = pointsDistanceMatrix.loc[lineA[0], ['Latitude', 'Longitude']].tolist()
-                    # pointAEnd = pointsDistanceMatrix.loc[lineA[-1], ['Latitude', 'Longitude']].tolist()
-                    # pointBStart = pointsDistanceMatrix.loc[lineB[0], ['Latitude', 'Longitude']].tolist()
-                    # pointBEnd = pointsDistanceMatrix.loc[lineB[-1], ['Latitude', 'Longitude']].tolist()
-
-                    # print(pointAStart)
-                    # print(pointAEnd)
-                    # print(pointBStart)
-                    # print(pointBEnd)
                     
+                    # Przypisanie współrzędnych linii A i B do zmiennych (start i koniec)
                     pointAStartLatitude, pointAStartLongitude = pointsDistanceMatrix.loc[lineA[0], ['Latitude', 'Longitude']].values
                     pointAEndLatitude, pointAEndLongitude = pointsDistanceMatrix.loc[lineA[-1], ['Latitude', 'Longitude']].values
                     pointBStartLatitude, pointBStartLongitude = pointsDistanceMatrix.loc[lineB[0], ['Latitude', 'Longitude']].values
                     pointBEndLatitude, pointBEndLongitude = pointsDistanceMatrix.loc[lineB[-1], ['Latitude', 'Longitude']].values
 
+                    # Przekształcenie współrzędnych geograficznych na współrzędne mapy
                     xpointAStart, ypointAStart = self.map(pointAStartLongitude, pointAStartLatitude)
                     xpointAEnd, ypointAEnd = self.map(pointAEndLongitude, pointAEndLatitude)
                     xpointBStar, ypointBStar = self.map(pointBStartLongitude, pointBStartLatitude)
                     xpointBEnd, ypointBEnd = self.map(pointBEndLongitude, pointBEndLatitude)
 
-                    print(xpointAStart, ypointAStart)
-                    print(xpointAEnd, ypointAEnd)
-                    print(xpointBStar, ypointBStar)
-                    print(xpointBEnd, ypointBEnd)
+                    # print(xpointAStart, ypointAStart)
+                    # print(xpointAEnd, ypointAEnd)
+                    # print(xpointBStar, ypointBStar)
+                    # print(xpointBEnd, ypointBEnd)
+                    
 
+                    # Obliczanie iloczynu wektorowego dla 4 punktów
+                    crossProductAStartWithB = (xpointBEnd - xpointBStar) * (ypointAStart - ypointBStar) - (ypointBEnd - ypointBStar) * (xpointAStart - xpointBStar)
+                    crossProductAEndWithB = (xpointBEnd - xpointBStar) * (ypointAEnd - ypointBStar) - (ypointBEnd - ypointBStar) * (xpointAEnd - xpointBStar)
+                    crossProductBStartWithA = (xpointAEnd - xpointAStart) * (ypointBStar - ypointAStart) - (ypointAEnd - ypointAStart) * (xpointBStar - xpointAStart)
+                    crossProductBEndWithA = (xpointAEnd - xpointAStart) * (ypointBEnd - ypointAStart) - (ypointAEnd - ypointAStart) * (xpointBEnd - xpointAStart)
+
+                    # Sprawdzenie, czy iloczyny wektorowe mają przeciwne znaki, co oznacza przecinanie się linii
+                    if crossProductAStartWithB * crossProductAEndWithB < 0 and crossProductBStartWithA * crossProductBEndWithA < 0:
+
+                        print("Linie się przecinają!")
+
+                        self.newPointIDList = pointIDList.copy()
+
+                        # Wstawienie nowego punktu PO indeksie (dlatego dodajemy 1 do indeksu)
+                        self.newPointIDList.insert(pointListIndex + 1, newPointID[0])
+                        sortedPointsIDList = self.newPointIDList
+                        #return sortedPointsIDList
+
+                    else:
+                        print("Linie się nie przecinają.")
+                        
+                    
                     print("")
+        
+        
 
 
 
-
+        return sortedPointsIDList
 
 
         
