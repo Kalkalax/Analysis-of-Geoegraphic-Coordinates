@@ -6,8 +6,6 @@ from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
 
-import itertools
-
 
 class DataProcessor:
     def __init__(self):
@@ -180,17 +178,19 @@ class DataProcessor:
             errorStatus = True
 
         else:
-            
+            #print(pointsDistanceMatrix)
             pointID = pointsDistanceMatrix.nsmallest(1, "Distance_from_origin").index[0]
             pointsIDList = [pointID]
 
-            row = pointsDistanceMatrix.iloc[[pointID]]
+            row = pointsDistanceMatrix.loc[[pointID]]
+            #print(row)
         
             cleanedRow = row.iloc[:, 3:]
             cleanedRow = cleanedRow.dropna(axis=1, how='any')
+            #print(cleanedRow)
 
             pointID = cleanedRow.idxmin(axis=1)
-            #print("Tutaj",pointID)
+
 
             #musimy wyciagnać który punkt zostal znaleziony
             pointID = pointID.iloc[0]
@@ -202,10 +202,11 @@ class DataProcessor:
             cleanedRow = row.iloc[:, 3:]
             cleanedRow = cleanedRow.drop(pointsIDList)
             cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'] = cleanedRow[f'Distance_to_point_{pointsIDList[0]}'] + cleanedRow[f'Distance_to_point_{pointsIDList[-1]}']
-            #print("Tutaj2", cleanedRow)
+
             pointID = cleanedRow[f'Sum_of_distances_to_{pointsIDList[0]}_and_{pointsIDList[-1]}'].idxmin()
-            #print("Tutaj2",pointID)
+
             pointsIDList += [pointID]
+            #print(pointsIDList)
 
             self.usedPointsIDList = pointsIDList
             
@@ -214,14 +215,7 @@ class DataProcessor:
         
     def findNextClosestPoints(self, pointsDistanceMatrix):
 
-
-        #print(pointsDistanceMatrix)
-        #print(self.usedPointsIDList)
-
-        #cleanedRow = pointsDistanceMatrix.iloc[:, 3:]
-        #cleanedRow = cleanedRow.loc[self.usedPointsIDList]
         cleanedRow = pointsDistanceMatrix.loc[self.usedPointsIDList, pointsDistanceMatrix.columns[3:]]
-        #print(cleanedRow)
 
         for ID in self.usedPointsIDList:
 
@@ -230,55 +224,33 @@ class DataProcessor:
         if cleanedRow.empty:
             return None
         else:
-        
             pointID = cleanedRow.min().idxmin()
             pointID = int(pointID.split('_')[-1])
-
             newPointID = [pointID]
-            print("0", newPointID)
 
             self.usedPointsIDList = self.usedPointsIDList + newPointID
-            print("01", newPointID)
+
             return newPointID
         
     def sortingPointsList(self, pointsDistanceMatrix, pointIDList, newPointID = None):
 
-        print("03", pointIDList)
         cleanedRow = pointsDistanceMatrix.loc[pointIDList]
-        #newRow = pointsDistanceMatrix.loc[newPointID]
-
-        print("04", cleanedRow)
-
         pointID = cleanedRow[f'Distance_to_point_{newPointID[0]}'].idxmin()
-
-        print(f"Najbliższy punkt od nowego punktu {newPointID} to {pointID}")
-
         pointListIndex = pointIDList.index(pointID)
-
-        print(f"Punkt {pointID} znajduje się na miejscu {pointListIndex+1}")
-
         ###
         
         self.newPointIDList = pointIDList.copy()
         self.newPointIDList.insert(pointListIndex, newPointID[0])
         sortedPointsIDList = self.newPointIDList 
-        print(f"posortowana lista do weryfikacji {sortedPointsIDList}")
+        lines = [(sortedPointsIDList[i], sortedPointsIDList[(i + 1) % len(sortedPointsIDList)]) for i in range(len(sortedPointsIDList))]
 
-        
-        
+        #
+        for i, lineA in enumerate(lines):
+            for j, lineB in enumerate(lines):
+                # 
+                if abs(i - j) > 1 and abs(i - j) < len(sortedPointsIDList) - 1:
 
-        # Generowanie wszystkich kombinacji 2-elementowych
-        allPointsCombinations = list(itertools.combinations(sortedPointsIDList, 2))
 
-        #Wyświetlenie wszystkich unikalnych kombinacji
-        for i, lineA in enumerate(allPointsCombinations):
-            for j, lineB in enumerate(allPointsCombinations):
-                # Unikamy porównywania tej samej linii lub porównania jej odwrotności
-                if i < j:
-                    #print(lineA[0], lineA[-1], lineB[0], lineB[-1])
-
-                    
-                    
                     # Przypisanie współrzędnych linii A i B do zmiennych (start i koniec)
                     pointAStartLatitude, pointAStartLongitude = pointsDistanceMatrix.loc[lineA[0], ['Latitude', 'Longitude']].values
                     pointAEndLatitude, pointAEndLongitude = pointsDistanceMatrix.loc[lineA[-1], ['Latitude', 'Longitude']].values
@@ -288,43 +260,33 @@ class DataProcessor:
                     # Przekształcenie współrzędnych geograficznych na współrzędne mapy
                     xpointAStart, ypointAStart = self.map(pointAStartLongitude, pointAStartLatitude)
                     xpointAEnd, ypointAEnd = self.map(pointAEndLongitude, pointAEndLatitude)
-                    xpointBStar, ypointBStar = self.map(pointBStartLongitude, pointBStartLatitude)
+                    xpointBStart, ypointBStart = self.map(pointBStartLongitude, pointBStartLatitude)
                     xpointBEnd, ypointBEnd = self.map(pointBEndLongitude, pointBEndLatitude)
 
-                    # print(xpointAStart, ypointAStart)
-                    # print(xpointAEnd, ypointAEnd)
-                    # print(xpointBStar, ypointBStar)
-                    # print(xpointBEnd, ypointBEnd)
-                    
+                    ###### tu musimy wyznaczyć na podstawie xy równanie lini y=ax+b dla obu lini
+                    mLineA = (ypointAEnd - ypointAStart) / (xpointAEnd - xpointAStart) if (xpointAEnd - xpointAStart) != 0 else None
+                    bLineA = ypointAStart - mLineA * xpointAStart if mLineA is not None else None
 
-                    # Obliczanie iloczynu wektorowego dla 4 punktów
-                    crossProductAStartWithB = (xpointBEnd - xpointBStar) * (ypointAStart - ypointBStar) - (ypointBEnd - ypointBStar) * (xpointAStart - xpointBStar)
-                    crossProductAEndWithB = (xpointBEnd - xpointBStar) * (ypointAEnd - ypointBStar) - (ypointBEnd - ypointBStar) * (xpointAEnd - xpointBStar)
-                    crossProductBStartWithA = (xpointAEnd - xpointAStart) * (ypointBStar - ypointAStart) - (ypointAEnd - ypointAStart) * (xpointBStar - xpointAStart)
-                    crossProductBEndWithA = (xpointAEnd - xpointAStart) * (ypointBEnd - ypointAStart) - (ypointAEnd - ypointAStart) * (xpointBEnd - xpointAStart)
+                    mLineB = (ypointBEnd - ypointBStart) / (xpointBEnd - xpointBStart) if (xpointBEnd - xpointBStart) != 0 else None
+                    bLineB = ypointBStart - mLineB * xpointBStart if mLineB is not None else None
 
-                    # Sprawdzenie, czy iloczyny wektorowe mają przeciwne znaki, co oznacza przecinanie się linii
-                    if crossProductAStartWithB * crossProductAEndWithB < 0 and crossProductBStartWithA * crossProductBEndWithA < 0:
+                    ###### nastepnie znaleść punkt przeciecia tych lini
+                    xIntersect = (bLineB - bLineA) / (mLineA - mLineB)
+                    yIntersect = mLineA * xIntersect + bLineA
 
-                        print("Linie się przecinają!")
+                    ###### sprawdzić czy punkt przeciecia leży na naszych liniach 
+                    if  (min(xpointAStart, xpointAEnd) < xIntersect < max(xpointAStart, xpointAEnd) and
+                         min(ypointAStart, ypointAEnd) < yIntersect < max(ypointAStart, ypointAEnd) and
+                         min(xpointBStart, xpointBEnd) < xIntersect < max(xpointBStart, xpointBEnd) and
+                         min(ypointBStart, ypointBEnd) < yIntersect < max(ypointBStart, ypointBEnd)):
 
                         self.newPointIDList = pointIDList.copy()
 
                         # Wstawienie nowego punktu PO indeksie (dlatego dodajemy 1 do indeksu)
                         self.newPointIDList.insert(pointListIndex + 1, newPointID[0])
                         sortedPointsIDList = self.newPointIDList
-                        #return sortedPointsIDList
-
-                    else:
-                        print("Linie się nie przecinają.")
-                        
-                    
-                    print("")
+                        return sortedPointsIDList
         
-        
-
-
-
         return sortedPointsIDList
 
 

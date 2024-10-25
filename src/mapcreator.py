@@ -6,6 +6,7 @@ class MapCreator:
     def __init__(self, pointsDistanceMatrix):
         self.pointsDistanceMatrix = pointsDistanceMatrix
         self.map = Basemap
+        #self.i = 1
 
 
     def createMap(self):
@@ -22,7 +23,12 @@ class MapCreator:
         # Rysowanie linii brzegowej i wypełnianie kontynentów
         self.map.drawcoastlines(color='#74C558')
         self.map.fillcontinents(color='#74C558', lake_color='white')
-        self.map.drawmapboundary(fill_color='None', color='None')
+        #self.map.drawmapboundary(fill_color='None', color='None')
+        self.map.drawmapboundary(fill_color='white', color='white')  # Ustaw kolor morza na biało
+
+        # Ustawienie koloru tła osi (tło całej mapy)
+        self.ax.set_facecolor('white')  # Tło osi na biało
+        
         
         # Równoleżniki i południki
         self.map.drawparallels(np.arange(-90, 90, 30), labels=[1, 0, 0, 0])
@@ -38,35 +44,28 @@ class MapCreator:
         
         # Wyświetlenie mapy
         plt.show()
+        #plt.savefig("mapa_wykres1.png", format='png', bbox_inches='tight')
 
 
     def markAllPoints(self):
 
-        for latitude, longitude  in zip(self.pointsDistanceMatrix['Latitude'], self.pointsDistanceMatrix['Longitude']):    
-            
+        
+        for idx, (latitude, longitude) in zip(self.pointsDistanceMatrix.index, zip(self.pointsDistanceMatrix['Latitude'], self.pointsDistanceMatrix['Longitude'])):
             xpoint, ypoint = self.map(longitude, latitude)
             self.map.plot(xpoint, ypoint, "r.")
-        
-        #plt.pause(0.5)
-        #plt.draw()
+            #plt.annotate(str(idx), (xpoint, ypoint), textcoords="offset points", xytext=(5,5), ha='center', color="blue", fontsize=9)
 
     def changePointColor(self, pointsIDList):
 
-        #plt.pause(0.5)
-
         for point in pointsIDList:
 
-            #print(point)
             row = self.pointsDistanceMatrix.loc[[point]]
-            #print(row)
+
             latitude = row['Latitude'].values[0]
             longitude = row['Longitude'].values[0]
-            #print(latitude.values, longitude.values)
+
             xpoint, ypoint = self.map(longitude, latitude)
             self.map.plot(xpoint, ypoint, "b.")
-
-        #plt.draw()
-
 
     def drawLineConnectingPoints(self, sortedPointsIDList):
     # Sprawdzenie, czy istnieją narysowane linie i ich usunięcie
@@ -80,8 +79,6 @@ class MapCreator:
         # Dodaj punkt końcowy, aby zamknąć pętlę
         self.sortedPointsIDList = sortedPointsIDList + [sortedPointsIDList[0]]
 
-        print("Rysowane połączenia")
-
         for i in range((len(self.sortedPointsIDList)-1)):
 
             pointAID = self.sortedPointsIDList[i]
@@ -93,8 +90,6 @@ class MapCreator:
             pointBLatitude = self.pointsDistanceMatrix.loc[pointBID]['Latitude']
             pointBLongitude = self.pointsDistanceMatrix.loc[pointBID]['Longitude']
 
-            print(pointAID, pointALatitude, pointALongitude, "-->", pointBID, pointBLatitude, pointBLongitude)
-
             xPointA, yPointA = self.map(pointALongitude, pointALatitude)
             xPointB, yPointB = self.map(pointBLongitude, pointBLatitude)
             
@@ -105,6 +100,8 @@ class MapCreator:
 
     def updatChart(self):
 
-        plt.pause(0.5)
+        plt.pause(0.2)
         plt.draw()
+        #plt.savefig(f"mapa_wykres{self.i}.png", format='png', bbox_inches='tight')
+        #self.i += 1 
         

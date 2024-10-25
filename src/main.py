@@ -7,7 +7,7 @@ from configurationfliemenager import ConfigurationFlieMenager #klasa odpowiedzia
 
 from databasemanager import DatabaseManager 
 
-from new_mapcreator import MapCreator
+from mapcreator import MapCreator
 
 
 
@@ -167,15 +167,12 @@ if __name__ == "__main__":
         else:
             exitWithMessage("błąd bazy danych") # to chyba do zmiany
 
-
     if (addedRow := databaseManager.insertData(dataFrame)) is not None:
         print(f"# Dodano {addedRow} nowych rekordów do bazy danych ")
     else:
         exitWithoutMessage()
 
-
     if (dataFrame := databaseManager.getData()) is not None:
-        print(dataFrame)
         print(f"# Pobrano {len(dataFrame)} rekordów z bazy danych ")
     else:
         exitWithoutMessage()
@@ -193,13 +190,12 @@ if __name__ == "__main__":
 
     mapCreator = MapCreator(pointsDistanceMatrix)
     mapCreator.createMap()
+
     mapCreator.markAllPoints()
     mapCreator.updatChart()
 
+
 ###
-
-    print(pointsDistanceMatrix)
-
 
     errorStatus, pointsIDList = dataProcessor.findClosestTrianglePoints(pointsDistanceMatrix)
 
@@ -215,23 +211,15 @@ if __name__ == "__main__":
     #########################################################
 
     mapCreator.changePointColor(pointsIDList)
-    print("1", pointsIDList)
-
+    mapCreator.updatChart()
     mapCreator.drawLineConnectingPoints(pointsIDList)
-    print("2", pointsIDList)
     mapCreator.updatChart()
 
-    #exitWithoutMessage() #----------------------------------------------
-
-    #while True:
-    for i in range(4):
+    
+    while True:
 
         newPointID = dataProcessor.findNextClosestPoints(pointsDistanceMatrix)
-        print("New point:", newPointID)
-        print("3", pointsIDList)
-        
 
-        # Sprawdzamy czy mamy nowy punkt dod dodania na mape 
         if newPointID is None:
             break
         else:
@@ -240,14 +228,20 @@ if __name__ == "__main__":
             mapCreator.changePointColor(newPointID)
             mapCreator.updatChart()
 
+
             # Sortujemy odpowiednio punkty do wyznaczenia nowej lini łączącej
             pointsIDList = dataProcessor.sortingPointsList(pointsDistanceMatrix, pointsIDList, newPointID)
-            print("4", pointsIDList)
 
             # Nanosimy nowy układ lini na wykres i wymazujemy stary
             mapCreator.drawLineConnectingPoints(pointsIDList)
             mapCreator.updatChart()
 
+
+            print(f"# Wykorzystane punkty: {len(pointsIDList)} / {pointsDistanceMatrixSize}")
+
+    print(f"# Figura łącząca wszystkie naniesione punkty została wyznaczona")
+
+    print("Koncowa kolejność: ", pointsIDList)
             
             
 
