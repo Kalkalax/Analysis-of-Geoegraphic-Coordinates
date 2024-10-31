@@ -1,24 +1,28 @@
-import tkinter as tk
-from tkinter import filedialog
+import tkinter as tk # Library for creating graphical interfaces
+from tkinter import filedialog # Module to open dialogues for file selection
 
-#Klasa obsługująca wybór scieżki do pliku i zwrócenie jej kolejnej klasie
+
+# Class that handles the selection of the file path and passing it on to the next class
 class FilePathRequester:
     def __init__(self):
-        self.filePath = ""
+        self.filePath = ""  
 
-    #Metoda uruchamiająca wywołanie okna dialogowego do wyboru pliku
+    # Method to launch file selection dialog box
     def askFilePath(self):
 
-        root = tk.Tk() #Ukrycie okna Tk
+        # Initialise the Tkinter window and hide the main window to make it invisible
+        root = tk.Tk()  
         root.withdraw()
 
+        # Call up dialog box to select CSV file
         self.filePath = filedialog.askopenfilename(filetypes=[("Pliki CSV", "*.csv")])
-        if not self.filePath == "":
-            return True
-        else:
-            return False
-
-    #Metoda zwracająca scieżke do wybranego pliku
-    def getPath(self):
         
-        return self.filePath
+        # Checking whether the user has selected a file
+        if not self.filePath == "":
+            return True 
+        else:
+            return False  
+
+    # Method that returns the path to the selected files
+    def getPath(self):
+        return self.filePath  

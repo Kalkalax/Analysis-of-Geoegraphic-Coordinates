@@ -1,4 +1,6 @@
+# Class that stores the configuration parameters needed to connect to the database
 class ConfigurationParameters:
+
     host = "localhost"
     port = "5432"
     dbname = "Analysis-of-Geoegraphic-Coordinates"
