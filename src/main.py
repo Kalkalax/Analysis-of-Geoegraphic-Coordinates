@@ -271,5 +271,5 @@ if __name__ == "__main__":
 
     #########################################################
           
-    # Stop the program until the user closes it
-    exitWithoutMessage()
+# Stop the program until the user closes it
+exitWithoutMessage()

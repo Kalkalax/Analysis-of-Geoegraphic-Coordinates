@@ -72,7 +72,7 @@ class DataProcessor:
                 self.dataValidationErrorStatus = errorStatus
 
                 # Adding an error message to the error list
-                errorList.append(f"! Kordynaty punktu '{value}' o indeksie ID = {index} posiadają nie odpowiedni format")
+                errorList.append(f"# The ordinates of point '{value}' with index ID = {index} have an inappropriate format")
             
             # Insert the converted coordinates into the DataFrame
             dataFrame.iloc[index, 1] = f"{latitude},{longitude}"

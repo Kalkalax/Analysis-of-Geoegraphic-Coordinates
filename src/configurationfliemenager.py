@@ -35,7 +35,7 @@ class ConfigurationFlieMenager:
         with open(self.filePath, "w") as file:
             #Iterates through the dictionary and writes each key and value on a new line in the format 'key = value'
             for key, value in self.configParameters.items():
-                file.write(f"{key} = '{value}'\n")
+                file.write(f"{key} = {value}\n")
 
     # Method that reads the configuration file 
     def readConfigFile(self):
