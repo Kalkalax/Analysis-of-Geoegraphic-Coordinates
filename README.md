@@ -80,7 +80,7 @@ Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
 
 <sup>1</sup> w razie problemów z danymi można zmodyfikować regexy znajdujące się w `dataprocessor.checkAndConvertCoordinates()` bądz dostosować dane do wymaganego formatu. Wszystkie akceptowalne formaty znajdują się poniżej a ich działanie można sprawdzić na stronie [regex101: build, test, and debug regex](https://regex101.com/)
 
-```regex
+```python
 ^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$
 ^([NS])(\d{1,3}\.\d+)°,([EW])(\d{1,3}\.\d+)°$
 ^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$"
