@@ -6,9 +6,9 @@
 
 ## Description
 
-Aplikacja służy do wizualizacji zamkniętej figury geometrycznej na interaktywnej mapie, która powstaje w wyniku połączenia wszystkich punktów geograficznych. Umożliwia to wyznaczenie rzeczywistego obwodu stworzonej figury. 
+The application is used to visualise a closed geometric figure on an interactive map, which is created by connecting all geographical points. This makes it possible to determine the actual perimeter of the created figure. 
 
-Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie lokalizacji i tworzenie złożonych kształtów.Po zaimportowaniu dane przechodzą skrupulatną weryfikację pod kątem zgodności formatów. Po pozytywnej weryfikacji, są one przechowywane w bazie danych PostgreSQL, co zapewnia ich bezpieczeństwo oraz wydajność. Następnie aplikacja wyznacza zamkniętą figurę geometryczną z pobranych lokalizacji, nanosi ją na mapę świata oraz oblicza jej rzeczywisty obwód.
+Geographical data is imported from CSV files, allowing you to easily add locations and create complex shapes.Once imported, the data undergoes a meticulous verification for format compatibility. Once successfully verified, they are stored in a PostgreSQL database, ensuring their security and performance. The application then determines a closed geometric figure from the downloaded locations, plots it on a world map and calculates its actual perimeter.
 
 ## Table of contents
 - [Functionality](#functionality)
@@ -18,7 +18,7 @@ Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie 
   - [Software versions](#software-versions)
   - [Python libraries](#python-libraries)
 - [Setup](#setup)
-  - [Using a ready-made `.exe` file (_relese_)](#using-a-ready-made-exe-file-relese)
+  - [Using a ready-made .exe file (_relese_)](#using-a-ready-made-exe-file-relese)
   - [Manual (_develop_)](#manual-develop)
 - [Input data set](#input-data-set)
   - [Data format requirements](#data-format-requirements)
@@ -28,30 +28,30 @@ Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie 
 
 ## Functionality
 
-- ***Import plików CSV*** - Aplikacja umożliwia użytkownikowi załadowanie pliku CSV z danymi geograficznymi oraz sprawdza, czy plik jest dostępny i poprawnie wskazany.
+- ***Import of CSV files*** - The application allows the user to upload a CSV file with geographical data and checks that the file is available and correctly indicated.
 
-- ***Weryfikacja danych*** - Przeprowadza kontrolę danych w pliku CSV, aby upewnić się, że nie zawierają błędów. W przypadku wykrycia problemów, aplikacja informuje użytkownika o koniecznych poprawkach.
+- ***Data verification*** - It performs a check of the data in the CSV file to ensure that it does not contain errors. If problems are detected, the application informs the user of the necessary corrections.
 
-- ***Obsługa pliku konfiguracyjnego*** - Aplikacja sprawdza obecność pliku konfiguracyjnego z danymi logowania do bazy danych. Jeśli go nie ma, automatycznie go tworzy.
+- ***Configuration file support*** - The application checks for the presence of a configuration file with database login data. If it is not present, it automatically creates it.
 
-- ***Tworzenie bazy danych*** - Jeśli wskazana baza danych nie istnieje, aplikacja tworzy nową bazę oraz odpowiednie tabele. W przeciwnym razie sprawdza, czy tabele są już utworzone.
+- ***Creation of a database*** - If the indicated database does not exist, the application creates a new database and the corresponding tables. Otherwise, it checks whether the tables are already created.
 
-- ***Wprowadzanie danych do bazy*** - Tylko zweryfikowane dane są wprowadzane do bazy danych. Aplikacja zapewnia, że nie wystąpią duplikaty.
+- ***Entry of data into the database*** - Only verified data is entered into the database. The application ensures that no duplicates occur.
 
-- ***Wyciąganie danych z bazy*** - Aplikacja pobiera dane z bazy danych i wyświetla je na mapie świata, unikając powtarzających się punktów, jeśli ich godziny lub inne wartości są identyczne.
+- ***Extracting data from the database*** - The application takes data from the database and displays it on a world map, avoiding repeated points if their times or other values are identical.
 
-- ***Rysowanie figury geometrycznej*** - Algorytm identyfikuje pierwsze trzy punkty i sprawdza możliwość utworzenia zamkniętej figury. Dla większej liczby punktów do figury dodawany jest najbliższy punkt.
+- ***Drawing a geometric figure*** - The algorithm identifies the first three points and checks the possibility of forming a closed figure. For a larger number of points, the nearest point is added to the figure.
 
-- ***Interaktywne wyświetlanie działań algorytmu*** - Każdy krok algorytmu jest na bieżąco wyświetlany użytkownikowi, co pozwala mu obserwować postęp w tworzeniu figury i doborze najbliższego punktu.
+- ***Interactive display of algorithm activities*** - Each step of the algorithm is continuously displayed to the user, allowing them to observe the progress of the figure and the selection of the nearest point.
 
 ## Demo
-Poniżej przedstawiono działanie algorytmu na 22 punktach lokalizacyjnych, z których dwa zostały scalone ze względu na identyczne współrzędne geograficzne.
+The performance of the algorithm on 22 location points, two of which were merged due to identical geographical coordinates, is shown below.
 
   ![Demo aplikacji](docs/demo.gif)
 
 ## Requirements
 
-Aby zagwarantować poprawne działanie aplikacji, należy spełnić poniższe wymagania. Aplikacja nie była testowana na innych konfiguracjach, co może stanowić potencjalne ryzyko dla jej prawidłowego funkcjonowania.
+The following requirements must be met in order to guarantee the correct functioning of the application. The application has not been tested on other configurations, which may pose a potential risk to its correct functioning.
 
 #### Operating System:
 - Windows 11 Home 23H2+
@@ -67,20 +67,20 @@ Aby zagwarantować poprawne działanie aplikacji, należy spełnić poniższe wy
 
 ### Using a ready-made `.exe` file (_relese_)
 
-Aby uruchomić aplikacje bez instalacji należy pobrać zawartość z gałęzi `relese`. Następnie należy uruchomić `AoGC.exe. 
+To run the applications without installation, download the contents from the `relese` branch. Then run `AoGC.exe`. 
 
->Pamiętaj instalacja PostgreSQL 16 jest niezbędna do prawidłowego funkcjonowania bazy danych. Możliwe, że będzie również wymagana dodatkowa konfiguracja.
+>Remember the installation of PostgreSQL 16 is necessary for the database to function properly. It is also possible that additional configuration will be required.
 
 
 ### Manual (_develop_)
 
-Aby uruchomić aplikacje w interpreterze jezyka Python należy zainstalowac wymagane biblioteki. Aby to zrobić otwórz konsole w lokalizacji repozytorium i użyj jednego z poniższych poleceń:
-- W konsoli języka Python:
+To run applications in the Python language interpreter, the required libraries must be installed. To do this, open the console in the repository location and use one of the following commands:
+- In the Python language console:
 
   ```python
   pip install -r docs/requirements.txt 
   ```
-- bądz w wierszu poleceń (cmd):
+- or on the command line (cmd):
 
   ```python
   python3 -m pip install -r docs/requirements.txt 
@@ -89,19 +89,19 @@ Aby uruchomić aplikacje w interpreterze jezyka Python należy zainstalowac wyma
 
 ## Input data set
 ### Data format requirements
-Aplikacja przyjmuje dane tylko w rozszerzeniu `.csv`. Dane wejściowe muszą być odpowiednio wstępnie sformatowane.
-Każdy plik danych powinien zawierać dane jak w przykładzie poniżej, kolejność kolumn w pliku nie może ulec zmianie (w razie takiej potrzeby należy zmodyfikować klase `DataProcessor`)
+The application only accepts data in the `.csv` extension. The input data must be pre-formatted accordingly.
+Each data file should contain data as in the example below, the order of columns in the file must not be changed (modify the `DataProcessor` class if necessary)
 
-Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
+The table below provides a detailed description of each column:
 
-|Kolumna|Opis|Uwagi|
+|Column|Description|Notes|
 |:--------:|:--------:|:--------:|
-|point name|Nazwa punktu współrzędnych bądz nazwa własnna | Może zawierać tylko znaki alfabetu łacińskiego
-|coordinates|Współrzędne geograficzne punktu |Akceptowalne są dane w formacie dziesiętnym, w stopnaich, w stopniach z minutami, oraz w stopniach z minutami i sekundami<sup>1</sup>|
-|altitude|Wysokość punktu n.p.m| Wartość musi być wyrażona w kilometrach|
-|metadata|Dodatkowe metadane| Nie są wymagane do prawidłowego działania<sup>2</sup>|
+|point name|Name of coordinate point or own name | May contain only Latin characters
+|coordinates|Geographical coordinates of the point |Data in decimal format, in degrees, in degrees with minutes, and in degrees with minutes and seconds are acceptable<sup>1</sup>|
+|altitude|Altitude of point| The value must be expressed in kilometres|
+|metadata|Additional metadata| Not required for proper operation<sup>2</sup>|
 
-<sup>1</sup> w razie problemów z danymi można zmodyfikować regexy znajdujące się w `dataprocessor.checkAndConvertCoordinates()` bądz dostosować dane do wymaganego formatu. Wszystkie akceptowalne formaty znajdują się poniżej a ich działanie można sprawdzić na stronie [regex101: build, test, and debug regex](https://regex101.com/)
+<sup>1</sup> If you have problems with the data, you can modify the regexes found in `dataprocessor.checkAndConvertCoordinates()` or adapt the data to the required format. All acceptable formats are listed below and can be checked at [regex101](https://regex101.com/):
 
 ```regex
 ^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$
@@ -109,7 +109,7 @@ Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
 ^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$
 ^([NS])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"\,([EW])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"$
 ```
-<sup>2</sup> jeśli metadane będą wymagały weryfikacji należy zmodyfikować metode `dataprocessor.checkMetadata()` uzupełniając ją o własną metode weryfikacji (domyślnie nieużywana)
+<sup>2</sup> if the metadata needs to be verified, modify the `dataprocessor.checkMetadata()` method with your own verification method (not used by default)
 
 ### Example content of CSV data file
 ```csv
