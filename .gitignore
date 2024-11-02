@@ -166,3 +166,4 @@ cython_debug/
 
 config.py
 tests/
+relese/
