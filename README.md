@@ -11,20 +11,19 @@ Aplikacja służy do wizualizacji zamkniętej figury geometrycznej na interaktyw
 Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie lokalizacji i tworzenie złożonych kształtów.Po zaimportowaniu dane przechodzą skrupulatną weryfikację pod kątem zgodności formatów. Po pozytywnej weryfikacji, są one przechowywane w bazie danych PostgreSQL, co zapewnia ich bezpieczeństwo oraz wydajność. Następnie aplikacja wyznacza zamkniętą figurę geometryczną z pobranych lokalizacji, nanosi ją na mapę świata oraz oblicza jej rzeczywisty obwód.
 
 ## Table of contents
-- [Functionality](#)
-- [Demo](#)
-- [Requirements](#)
-  - [Operating System](#)
-  - [Software versions](#)
-  - [Python libraries](#)
-- [Setup](#d)
-  - [Using a ready-made `.exe` file](#)
-  - [Manual (develop)](#)
-- [Input data set](#)
-  - [Data format requirements](#)
-  - [Example content of CSV data file](#)
-- [Usage/Examples](#)
-- [Documentation](#)
+- [Functionality](#functionality)
+- [Demo](#demo)
+- [Requirements](#requirements)
+  - [Operating System](#operating-system)
+  - [Software versions](#software-versions)
+  - [Python libraries](#python-libraries)
+- [Setup](#setup)
+  - [Using a ready-made `.exe` file (_relese_)](#using-a-ready-made-exe-file-relese)
+  - [Manual (_develop_)](#manual-develop)
+- [Input data set](#input-data-set)
+  - [Data format requirements](#data-format-requirements)
+  - [Example content of CSV data file](#example-content-of-csv-data-file)
+- [Documentation](#documentation)
 
 
 ## Functionality
@@ -48,7 +47,7 @@ Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie 
 ## Demo
 Poniżej przedstawiono działanie algorytmu na 22 punktach lokalizacyjnych, z których dwa zostały scalone ze względu na identyczne współrzędne geograficzne.
 
-  ![Demo aplikacji](demo.gif)
+  ![Demo aplikacji](docs/demo.gif)
 
 ## Requirements
 
@@ -58,29 +57,33 @@ Aby zagwarantować poprawne działanie aplikacji, należy spełnić poniższe wy
 - Windows 11 Home 23H2+
 #### Software versions:
 - Python 3.12+
-- PostgreSQL 16 
+- PostgreSQL 16
 - pgAdmin 4 (optionally)
 #### Python libraries:
-- `pandas`, `numpy`, `matplotlib`, `basemap`, `basemap_data`, `psycopg2`, `tabulate`
+- `pandas`, `numpy`, `matplotlib`, `basemap`, `basemap_data`, `psycopg2`, `tabulate`, `haversin`
 
 
 ## Setup
 
-### Using a ready-made `.exe` file
+### Using a ready-made `.exe` file (_relese_)
+
+Aby uruchomić aplikacje bez instalacji należy pobrać zawartość z gałęzi `relese`. Następnie należy uruchomić `AoGC.exe. 
+
+>Pamiętaj instalacja PostgreSQL 16 jest niezbędna do prawidłowego funkcjonowania bazy danych. Możliwe, że będzie również wymagana dodatkowa konfiguracja.
 
 
-### Manual (develop)
+### Manual (_develop_)
 
-Aby zainstalowac wymagane biblioteki użyj jednego z poniższych poleceń:
+Aby uruchomić aplikacje w interpreterze jezyka Python należy zainstalowac wymagane biblioteki. Aby to zrobić otwórz konsole w lokalizacji repozytorium i użyj jednego z poniższych poleceń:
 - W konsoli języka Python:
 
   ```python
-  pip install -r requirements.txt 
+  pip install -r docs/requirements.txt 
   ```
 - bądz w wierszu poleceń (cmd):
 
   ```python
-  python3 -m pip install -r requirements.txt
+  python3 -m pip install -r docs/requirements.txt 
   ```
 
 
@@ -100,7 +103,7 @@ Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
 
 <sup>1</sup> w razie problemów z danymi można zmodyfikować regexy znajdujące się w `dataprocessor.checkAndConvertCoordinates()` bądz dostosować dane do wymaganego formatu. Wszystkie akceptowalne formaty znajdują się poniżej a ich działanie można sprawdzić na stronie [regex101: build, test, and debug regex](https://regex101.com/)
 
-```python
+```regex
 ^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$
 ^([NS])(\d{1,3}\.\d+)°,([EW])(\d{1,3}\.\d+)°$
 ^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$
@@ -114,17 +117,6 @@ point name;coordinates;altitude;data and time;metadata
 Tokyo;N35°40'58.220",E139°45'34.038";0.044;15.06.2024 08:20;
 ```
 
-
-## Usage/Examples
-
-```javascript
-import Component from 'my-project'
-
-function App() {
-  return <Component />
-}
-```
-
 ## Documentation
 
-[Documentation]()
+[Documentation](docs/Documentation.md)
