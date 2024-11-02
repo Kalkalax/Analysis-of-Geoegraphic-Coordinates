@@ -265,9 +265,17 @@ if __name__ == "__main__":
 
     print()
 
-    # Display a message that the process of connecting all lines and the order of connecting points is complete
+    #########################################################
+
+    # Display a message that the process of joining all lines and the order in which points are joined is complete
     print(f"# The figure connecting all the marked points has been determined")
     print("# Final order of connecting points:", pointsIDList)
+    print()
+
+    # Calculate the perimeter of a closed geometric figure formed by a point and display its value
+    figureCircumference = dataProcessor.calculateFigureCircumference(pointsDistanceMatrix, pointsIDList)
+    print("# The perimeter of the closed geometric figure formed on the map is:", round(figureCircumference, 3), "km")
+    print()
 
     #########################################################
           

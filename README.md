@@ -4,68 +4,88 @@
   <a href="https://github.com/kamilkalarus">Kamil Kalarus</a>
 </p>
 
-## Opis
+## Description
 
+Aplikacja służy do wizualizacji zamkniętej figury geometrycznej na interaktywnej mapie, która powstaje w wyniku połączenia wszystkich punktów geograficznych. Umożliwia to wyznaczenie rzeczywistego obwodu stworzonej figury. 
 
+Dane geograficzne importowane są z plików CSV, co pozwala na łatwe dodawanie lokalizacji i tworzenie złożonych kształtów.Po zaimportowaniu dane przechodzą skrupulatną weryfikację pod kątem zgodności formatów. Po pozytywnej weryfikacji, są one przechowywane w bazie danych PostgreSQL, co zapewnia ich bezpieczeństwo oraz wydajność. Następnie aplikacja wyznacza zamkniętą figurę geometryczną z pobranych lokalizacji, nanosi ją na mapę świata oraz oblicza jej rzeczywisty obwód.
 
-Aplikacja umożliwia wczytanie współrzędnych geograficznych z pliku CSV, 
-co pozwala użytkownikom na łatwe dodawanie lokalizacji. Przed zapisaniem, 
-dane te przechodzą dokładną weryfikację, aby zapewnić ich poprawność i spójność. Sprawdzane są m.in. format współrzędnych oraz zakres wartości geograficznych. Dopiero po pozytywnej weryfikacji, dane są przechowywane w bazie danych PostgreSQL, co zapewnia wydajność oraz skalowalność aplikacji.
+## Table of contents
+- [Functionality](#)
+- [Demo](#)
+- [Requirements](#)
+  - [Operating System](#)
+  - [Software versions](#)
+  - [Python libraries](#)
+- [Setup](#d)
+  - [Using a ready-made `.exe` file](#)
+  - [Manual (develop)](#)
+- [Input data set](#)
+  - [Data format requirements](#)
+  - [Example content of CSV data file](#)
+- [Usage/Examples](#)
+- [Documentation](#)
 
-Po pobraniu danych z bazy, aplikacja wizualizuje współrzędne na interaktywnej mapie świata. Punkty są łączone liniami w taki sposób, aby tworzyły zamknięte figury geometryczne, co umożliwia użytkownikom obserwację różnych kształtów i wzorów. Aplikacja wdraża algorytmy, które zapewniają, że linie nie przecinają się, co jest kluczowe dla estetyki i czytelności wizualizacji.
-
-
-## Spis treści
-- [Funkcjonalność](#funkcjonalność)
-- [Demo](#demo)
 
 ## Functionality
-- Wyznaczanie najbliższych punktów w zestawie danych.
-- Tworzenie wizualizacji na mapie.
-- Analiza i filtrowanie danych.
 
+- ***Import plików CSV*** - Aplikacja umożliwia użytkownikowi załadowanie pliku CSV z danymi geograficznymi oraz sprawdza, czy plik jest dostępny i poprawnie wskazany.
 
+- ***Weryfikacja danych*** - Przeprowadza kontrolę danych w pliku CSV, aby upewnić się, że nie zawierają błędów. W przypadku wykrycia problemów, aplikacja informuje użytkownika o koniecznych poprawkach.
+
+- ***Obsługa pliku konfiguracyjnego*** - Aplikacja sprawdza obecność pliku konfiguracyjnego z danymi logowania do bazy danych. Jeśli go nie ma, automatycznie go tworzy.
+
+- ***Tworzenie bazy danych*** - Jeśli wskazana baza danych nie istnieje, aplikacja tworzy nową bazę oraz odpowiednie tabele. W przeciwnym razie sprawdza, czy tabele są już utworzone.
+
+- ***Wprowadzanie danych do bazy*** - Tylko zweryfikowane dane są wprowadzane do bazy danych. Aplikacja zapewnia, że nie wystąpią duplikaty.
+
+- ***Wyciąganie danych z bazy*** - Aplikacja pobiera dane z bazy danych i wyświetla je na mapie świata, unikając powtarzających się punktów, jeśli ich godziny lub inne wartości są identyczne.
+
+- ***Rysowanie figury geometrycznej*** - Algorytm identyfikuje pierwsze trzy punkty i sprawdza możliwość utworzenia zamkniętej figury. Dla większej liczby punktów do figury dodawany jest najbliższy punkt.
+
+- ***Interaktywne wyświetlanie działań algorytmu*** - Każdy krok algorytmu jest na bieżąco wyświetlany użytkownikowi, co pozwala mu obserwować postęp w tworzeniu figury i doborze najbliższego punktu.
 
 ## Demo
-Poniżej przedstawiono działanie algorytmu na 22 punktach lokalizacyjnych. Dwa punkty lokalizacyjne zostały scalone z powodu tych samych współrzednych geograficznych.
+Poniżej przedstawiono działanie algorytmu na 22 punktach lokalizacyjnych, z których dwa zostały scalone ze względu na identyczne współrzędne geograficzne.
 
-![Demo aplikacji](demo.gif)
+  ![Demo aplikacji](demo.gif)
 
 ## Requirements
-Aby zagwarantować poprawne działanie aplikacji należy spełnić niniejsze wymagania, aplikacja nie była testowana na innych konfiguracjach co może być potencialnym problemem z jej prawidłowym działanie. 
 
-### System operacyjny:
+Aby zagwarantować poprawne działanie aplikacji, należy spełnić poniższe wymagania. Aplikacja nie była testowana na innych konfiguracjach, co może stanowić potencjalne ryzyko dla jej prawidłowego funkcjonowania.
+
+#### Operating System:
 - Windows 11 Home 23H2+
-### Wersje oprogramowania:
+#### Software versions:
 - Python 3.12+
 - PostgreSQL 16 
-- pgAdmin 4 (opcjonalnie)
-### Biblioteki Python:
+- pgAdmin 4 (optionally)
+#### Python libraries:
 - `pandas`, `numpy`, `matplotlib`, `basemap`, `basemap_data`, `psycopg2`, `tabulate`
 
 
 ## Setup
 
-### Użycie gotowego pliku `.exe`
+### Using a ready-made `.exe` file
 
 
-### Manualny (develop)
+### Manual (develop)
 
 Aby zainstalowac wymagane biblioteki użyj jednego z poniższych poleceń:
 - W konsoli języka Python:
 
-  ```
+  ```python
   pip install -r requirements.txt 
   ```
 - bądz w wierszu poleceń (cmd):
 
-  ```
+  ```python
   python3 -m pip install -r requirements.txt
   ```
 
 
 ## Input data set
-### Wymagania formatu danych
+### Data format requirements
 Aplikacja przyjmuje dane tylko w rozszerzeniu `.csv`. Dane wejściowe muszą być odpowiednio wstępnie sformatowane.
 Każdy plik danych powinien zawierać dane jak w przykładzie poniżej, kolejność kolumn w pliku nie może ulec zmianie (w razie takiej potrzeby należy zmodyfikować klase `DataProcessor`)
 
@@ -74,7 +94,7 @@ Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
 |Kolumna|Opis|Uwagi|
 |:--------:|:--------:|:--------:|
 |point name|Nazwa punktu współrzędnych bądz nazwa własnna | Może zawierać tylko znaki alfabetu łacińskiego
-|coordinates|Współrzędne geograficzne punktu |Akceptowalne są dane w formacie dziesiętnym, w stopnaich, w stopniach z minutami, oraz w stopniach z minutami i sekundami <sup>1</sup>|
+|coordinates|Współrzędne geograficzne punktu |Akceptowalne są dane w formacie dziesiętnym, w stopnaich, w stopniach z minutami, oraz w stopniach z minutami i sekundami<sup>1</sup>|
 |altitude|Wysokość punktu n.p.m| Wartość musi być wyrażona w kilometrach|
 |metadata|Dodatkowe metadane| Nie są wymagane do prawidłowego działania<sup>2</sup>|
 
@@ -83,12 +103,12 @@ Poniżej w tabeli zamieszczono szczegółowy opis każdej z kolumn:
 ```python
 ^(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)$
 ^([NS])(\d{1,3}\.\d+)°,([EW])(\d{1,3}\.\d+)°$
-^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$"
+^([NS])(\d{1,3})°(\d{1,3}\.\d+),([EW])(\d{1,3})°(\d{1,3}\.\d+)$
 ^([NS])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"\,([EW])(\d{1,3})°(\d{1,3})'(\d{1,3}\.\d+)\"$
 ```
 <sup>2</sup> jeśli metadane będą wymagały weryfikacji należy zmodyfikować metode `dataprocessor.checkMetadata()` uzupełniając ją o własną metode weryfikacji (domyślnie nieużywana)
 
-### Przykładowa zawartość pliku CSV:
+### Example content of CSV data file
 ```csv
 point name;coordinates;altitude;data and time;metadata
 Tokyo;N35°40'58.220",E139°45'34.038";0.044;15.06.2024 08:20;

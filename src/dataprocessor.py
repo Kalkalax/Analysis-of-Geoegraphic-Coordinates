@@ -1,6 +1,7 @@
 import re # Library for operations on regular expressions
 import pandas as pd # Library for data analysis and operations on data frames
 import numpy as np # Library for efficient calculations on multidimensional arrays
+from haversine import haversine, Unit # Function to calculate the distance between points on Earth based on coordinates 
 
 # Class responsible for processing geographic point data.
 class DataProcessor:
@@ -316,3 +317,23 @@ class DataProcessor:
                             return sortedPointsIDList 
             
         return sortedPointsIDList 
+    
+    #Method responsible for calculating the perimeter of a closed geometric figure from the geographical coordinates of points.
+    def calculateFigureCircumference(self, pointsDistanceMatrix, pointsIDList):
+        
+        figureCircumference = 0
+
+        # Iterate through each point in the `pointsIDList'
+        for pointID in range(len(pointsIDList)):
+            
+            # We retrieve the coordinates of point A from the DataFrame based on the identifier in pointsIDList
+            pointA = pointsDistanceMatrix.loc[pointsIDList[pointID], ['Latitude', 'Longitude']].values
+            
+            # We take the coordinates of the next point B, using the module to go to the first point after the last one
+            pointB = pointsDistanceMatrix.loc[pointsIDList[(pointID + 1) % len(pointsIDList)], ['Latitude', 'Longitude']].values
+
+            # We calculate the distance between points A and B using the haversine function (with unit in kilometres)
+            figureCircumference += haversine(pointA, pointB, unit=Unit.KILOMETERS)
+
+        return figureCircumference
+        
