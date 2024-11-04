@@ -23,7 +23,7 @@ Geographical data is imported from CSV files, allowing you to easily add locatio
 - [Input data set](#input-data-set)
   - [Data format requirements](#data-format-requirements)
   - [Example content of CSV data file](#example-content-of-csv-data-file)
-- [Documentation](#documentation)
+- [Start-up method](#start-up-method)
 
 
 ## Functionality
@@ -117,6 +117,96 @@ point name;coordinates;altitude;data and time;metadata
 Tokyo;N35°40'58.220",E139°45'34.038";0.044;15.06.2024 08:20;
 ```
 
-## Documentation
 
-[Documentation](docs/Documentation.md)
+## Start-up method
+To run the programme, open the cmd console in the `\src` folder of your local repository and use the command:
+
+```bash
+start main.py
+```
+then follow the instructions displayed in the console window.
+
+### The correct run of the programme should look as follows:
+
+<details>
+  <summary>Programme flow</summary>
+
+```
+# Specify the locations of the CSV file with the coordinate points.
+# The indication of the location of the CSV file has proceeded correctly.
+# The CSV file has been loaded correctly.
+
+╒════╤══════════════════╤══════════════════════════════╤════════════╤══════════════════╤════════════╕
+│    │ point name       │ coordinates                  │   altitude │ data and time    │   metadata │
+╞════╪══════════════════╪══════════════════════════════╪════════════╪══════════════════╪════════════╡
+│  0 │ Warsaw           │ 52.2319581,21.0067249        │      0.1   │ 17.05.2024 09:45 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  1 │ Tirana           │ N41°19.688892,E19°49.10661   │      0.11  │ 28.05.2024 18:32 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  2 │ Andorra la Vella │ N42°30'24.981",E1°31'16.488" │      1.023 │ 05.05.2024 12:07 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  3 │ Washington       │ N38.8950368°,W77.0365427°    │      0.125 │ 10.05.2024 23:19 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  4 │ Brussels         │ 50.8465573,4.351697          │      0.013 │ 22.05.2024 07:55 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  5 │ Minsk            │ N53°54.148296,E27°33.70935   │      0.281 │ 14.05.2024 15:29 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  6 │ Sarajevo         │ N43°51'7.119",E18°23'12.072" │      0.55  │ 19.05.2024 05:38 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  7 │ Sarajevo         │ N43°51'7.119",E18°23'12.072" │      0.55  │ 19.06.2024 05:38 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  8 │ Zagreb           │ N45.8130967°,E15.9772795°    │      0.158 │ 31.05.2024 10:14 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│  9 │ Paris            │ 48.8534951,2.3483915         │      0.035 │ 03.05.2024 20:50 │        nan │
+├────┼──────────────────┼──────────────────────────────┼────────────┼──────────────────┼────────────┤
+│ 10 │ Buenos Aires     │ -34.6131500,-58.3772300      │      0.025 │ 25.05.2024 01:23 │        nan │
+╘════╧══════════════════╧══════════════════════════════╧════════════╧══════════════════╧════════════╛
+
+# All coordinate points in the file have correct names.
+# All coordinate points in the file have the correct geographical coordinate format.
+# All coordinate points in the file have the correct altitude format.
+# All coordinate points in the file have a corresponding timestamp format.
+# All coordinate points in the file have the appropriate matadata format.
+
+# Verification of all data from the file has been successful.
+
+# The database configuration file 'config.py' does not exist.
+# Create database configuration file 'config.py'.
+# The database configuration file 'config.py' was loaded correctly.
+
+# The database Analysis-of-Geoegraphic-Coordinates exists.
+# The data table Analysis-of-Geoegraphic-Coordinates-Data exists.
+
+# Added 0 new records to the database.
+# Downloaded 22 records from the database.
+
+# Merged 2 locations from the database.
+
+# The figure connecting the marked points has been drawn
+# Points used: 3 / 20
+# Points used: 4 / 20
+# Points used: 5 / 20
+# Points used: 6 / 20
+# Points used: 7 / 20
+# Points used: 8 / 20
+# Points used: 9 / 20
+# Points used: 10 / 20
+# Points used: 11 / 20
+# Points used: 12 / 20
+# Points used: 13 / 20
+# Points used: 14 / 20
+# Points used: 15 / 20
+# Points used: 16 / 20
+# Points used: 17 / 20
+# Points used: 18 / 20
+# Points used: 19 / 20
+# Points used: 20 / 20
+
+# The figure connecting all the marked points has been determined
+# Final order of connecting points: [16, 19, 20, 15, 12, 11, 1, 6, 17, 5, 0, 13, 8, 4, 9, 3, 10, 2, 14, 18]
+
+# The perimeter of the closed geometric figure formed on the map is: 57360.203 km
+
+# Press Enter to close the application....
+```
+
